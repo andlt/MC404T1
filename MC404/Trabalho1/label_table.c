@@ -51,6 +51,7 @@ int remove_word (mem_word* target_word)
 	return 0;
 }
 
+//funções do grupo label (cada label contém as informações de um rótulo)
 
 label_node* create_lable_table ()
 {
@@ -111,29 +112,44 @@ int remove_label (label_node* target_node)
 
 }
 
-mem_word* fill_label_table (str* parsed_list)
+mem_word* fill_label_table (str* parsed_list, label_node* table)
 {
 	int line_count = 0;
 	char side = 'l';
 	label_node* previous_label = NULL;
+	str* next_str = parsed_list;
 
-	while(parsed_list != NULL){
-		//do stuff
-		//insert_word(side, opcode, address, previous_word);
-		parsed_list = parsed_list->next; //Isso pode dar merda
-		side = 'r';
-		if(parsed_list != NULL){
-			//do stuff
-			parsed_list = parsed_list->next; //Isso pode dar merda
-			line_count++;
+	if(next_str != NULL){
+		if(next_str->line == HEAD_NODE_CODE){ //pula nó cabeça
+			next_str = next_str->next;
+		}
+	}
+
+	while(next_str != NULL){
+		while(next_str->words != NULL){
+			if(next_str->words[strlen(next_str->words)-1] == ':'){
+				insert_label(line_count, side, next_str->words,table);
+			}
+		}
+		if(next_str->next == NULL){
+			return 0;
 		}
 		else{
-			break;
+			next_str = next_str->next; //Isso pode dar merda
+			if(side == 'l'){
+				side = 'r';
+			}
+			else { //side == 'r'
+				side = 'l'
+				line_count++;
+			}
 		}
 	}
 
 	return 0;
 }
+
+//funções de escrita do mapa de memória
 
 int write_mem_map (char* map_name, str* parsed_list, mem_word* table){
 

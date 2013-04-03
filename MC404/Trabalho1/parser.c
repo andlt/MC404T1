@@ -11,6 +11,8 @@
 
 #include "parser.h"
 
+//funções grupo token (cada token contém uma única palavra lida do arquivo de entrada)
+
 token* create_token_list ()
 {
 	//retorna um apontador para o nó cabeça de uma nova lista de tokens
@@ -66,21 +68,26 @@ token* tokenize_string (char* phrase)
 		}
 
 	tok = strtok(phrase, " ");
-	if(tok != NULL){ //adiciona o primeiro elemento após o nó cabeça
+	/*if(tok != NULL){ //adiciona o primeiro elemento após o nó cabeça
 		previous_token = insert_token(tok, new_token);
 		//printf("%s", previous_token->word);
 		printf("%s", tok);
 		tok = strtok(phrase, " ");
-	}
+	}*/
 	while(tok != NULL){ //adiciona os demais elementos
-		previous_token = insert_token(tok, previous_token);
+		previous_token = insert_token(tok, new_token);//previous_token);
 		//printf("%s", previous_token->word);
-		printf("%s", tok);
+		//printf("%s\n", tok);
 		tok = strtok(NULL, " ");
 	}
 
+	while(new_token->last != NULL)
+		new_token = new_token->last;
+
 	return new_token;
 }
+
+//funções grupo str (cada str equivale a uma linha lida do arquivo de entrada
 
 str* create_str_list ()
 {
@@ -139,6 +146,8 @@ int remove_str (str* target_str)
 	return 0;
 }
 
+//funções do grupo parse
+
 int parse_text (int argc, char* argv[])
 {
 	FILE *file;
@@ -153,6 +162,7 @@ int parse_text (int argc, char* argv[])
 	while(!feof(file)){
 		read_string = malloc(sizeof(char)*TAMANHO);
 		fgets(read_string, TAMANHO, file);
+		//printf("%s", read_string);
 		list_last = insert_str(NON_INIT_LINE, read_string, list_last); //linha não inicializada
 	}
 
@@ -174,6 +184,38 @@ int parse_line (char* text)
 	//parse_ recur_switch(text)
 
 	return 0;
+}
+
+//funções auxiliares
+
+int print_str_tokens (str* target_str)
+{
+	token* next_word = NULL;
+
+	next_word = target_str->words;
+
+	while(next_word != NULL){
+		printf("%s\n", next_word);
+		next_word = next_word->next;
+	}
+
+	return 0;
+}
+
+int print_str_tokens_recur (str* target_str)
+{
+	if(target_str != NULL){
+		if(print_str_tokens(target_str) == 0){
+			return print_str_tokens_recur(target_str->next);
+		}
+		else{
+			printf("Erro na impressao");
+			return -1;
+		}
+	}
+	else{
+		return 0;
+	}
 }
 
 int print_str_phrase (str* target_str)
