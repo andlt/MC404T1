@@ -50,8 +50,8 @@ token* insert_token (char *word, token* previous_token)
 		new_token->next = previous_token->next;
 
 		previous_token->next = new_token; //arruma os apontadores
-
 		return new_token;
+
 	}
 }
 
@@ -65,19 +65,15 @@ token* tokenize_string (char* phrase)
 	new_token = create_token_list();
 	if(new_token == NULL){ //testa a alocação de memória
 			printf("A Memória não pode ser alocada!\n");
-		}
+	}
 
 	tok = strtok(phrase, " ");
-	/*if(tok != NULL){ //adiciona o primeiro elemento após o nó cabeça
+	if(tok != NULL){ //adiciona o primeiro elemento após o nó cabeça
 		previous_token = insert_token(tok, new_token);
-		//printf("%s", previous_token->word);
-		printf("%s", tok);
-		tok = strtok(phrase, " ");
-	}*/
+		tok = strtok(NULL, " ");
+	}
 	while(tok != NULL){ //adiciona os demais elementos
-		previous_token = insert_token(tok, new_token);//previous_token);
-		//printf("%s", previous_token->word);
-		//printf("%s\n", tok);
+		previous_token = insert_token(tok, previous_token);//previous_token);
 		tok = strtok(NULL, " ");
 	}
 
@@ -148,42 +144,28 @@ int remove_str (str* target_str)
 
 //funções do grupo parse
 
-int parse_text (int argc, char* argv[])
+str* parse_text (int argc, char* argv[])
 {
+	//Lê o arquivo e retorna uma estrutura contendo cada palavra dele
+
 	FILE *file;
-	//int i = 0;
-	char *read_string = NULL;//, read_char = '0';
-	str *list = NULL, *list_last = NULL;//, *aux;
+
+	char *read_string = NULL;
+	str *str_list = NULL, *str_last = NULL;//, *aux;
 
 	file = fopen(argv[1], "r"); //abre o arquivo do argumento
 
-	list_last = list = create_str_list();
+	str_last = str_list = create_str_list();
 
 	while(!feof(file)){
 		read_string = malloc(sizeof(char)*TAMANHO);
 		fgets(read_string, TAMANHO, file);
-		//printf("%s", read_string);
-		list_last = insert_str(NON_INIT_LINE, read_string, list_last); //linha não inicializada
-	}
-
-	while(list != NULL){
-		list = list->next;
-		while(list->words != NULL){
-			list->words = list->words->next;
-			//printf("%s\n", list->words->word);
-		}
+		str_last = insert_str(NON_INIT_LINE, read_string, str_last); //linha não inicializada
 	}
 
 	fclose(file); //fecha o arquivo
 
-	return 0;
-}
-
-int parse_line (char* text)
-{
-	//parse_ recur_switch(text)
-
-	return 0;
+	return str_list;
 }
 
 //funções auxiliares

@@ -53,7 +53,7 @@ int remove_word (mem_word* target_word)
 
 //funções do grupo label (cada label contém as informações de um rótulo)
 
-label_node* create_lable_table ()
+label_node* create_label_table ()
 {
 	//devolve o nó cabeça de uma lista nova
 
@@ -127,8 +127,8 @@ mem_word* fill_label_table (str* parsed_list, label_node* table)
 
 	while(next_str != NULL){
 		while(next_str->words != NULL){
-			if(next_str->words[strlen(next_str->words)-1] == ':'){
-				insert_label(line_count, side, next_str->words,table);
+			if(next_str->words->word[strlen(next_str->words->word)-1] == ':'){
+				insert_label(line_count, side, next_str->words->word,table);
 			}
 		}
 		if(next_str->next == NULL){
@@ -140,7 +140,7 @@ mem_word* fill_label_table (str* parsed_list, label_node* table)
 				side = 'r';
 			}
 			else { //side == 'r'
-				side = 'l'
+				side = 'l';
 				line_count++;
 			}
 		}

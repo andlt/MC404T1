@@ -27,7 +27,7 @@ mem_word* insert_word (int line, char side, char* opcode, char* address,
 
 int remove_word (mem_word* target_node);
 
-label_node* create_lable_table ();
+label_node* create_label_table ();
 
 label_node* insert_label (int line, char side, char* name, label_node* previous_node);
 

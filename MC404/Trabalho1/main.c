@@ -15,9 +15,18 @@
 
 int main (int argc, char* argv[])
 {
+	str* parsed_text;
+	label_node* label_table;
+
 	printf("Tah Live!\n");
 
-	parse_text(argc, argv);
+	parsed_text = parse_text(argc, argv);
+
+	label_table = create_label_table();
+
+
+
+	printf("%s", parsed_text->next->next->next->words->next->next->word);
 
 	printf("Tah dead!\n");
 

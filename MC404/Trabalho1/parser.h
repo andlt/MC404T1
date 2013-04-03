@@ -37,6 +37,8 @@ token* create_token_list ();
 
 token* insert_token (char *word, token* previous_str);
 
+int remove_token (token* target_token);
+
 token* tokenize_string (char* phrase);
 
 str* create_str_list ();
@@ -45,9 +47,7 @@ str* insert_str (int line, char *text, str* previous_str);
 
 int remove_str (str* target_str);
 
-int parse_text (int argc, char* argv[]);
-
-int parse_line (char* text);
+str* parse_text (int argc, char* argv[]);
 
 int print_str_text (str* target_str);
 
