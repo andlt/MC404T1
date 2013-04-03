@@ -1,0 +1,20 @@
+; teste06.s - Testa a codificacao de todas as instrucoes do IAS
+
+
+	LMQ
+	LMQM M(0)
+	ST M(0)
+	LD M(0)
+	LDN M(0)
+	LDMOD M(0)
+	JMP M(rotulo)
+rotulo:	JMPP M(rotul2)
+rotul2: ADD M(0)
+	ADDMOD M(0)
+	SUB M(0)
+	SUBMOD M(0)
+	MUL M(0)
+	DIV M(0)
+	LSH
+	RSH
+	STM M(0)
