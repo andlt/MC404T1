@@ -10,11 +10,47 @@
 #define PARSER_H
 
 #include <stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+//#include "linked_list.h"
+#include <string.h>
 
-int parse_text (int argc, char* argv[]);
+#define TAMANHO 200
+#define HEAD_NODE_CODE -999
+#define NON_INIT_LINE -1
 
-int parse_line (char* text);
+typedef struct token {
+	char* word;
+	struct token* next;
+	struct token* last;
+} token;
 
-int parse_recur_switch (char* text);
+typedef struct str { //nó individual da lista ligada
+	int line;
+	char* phrase;
+	token* words;
+	struct str* next;
+	struct str* last;
+} str;
+
+token* create_token_list ();
+
+token* insert_token (char *word, token* previous_str);
+
+int remove_token (token* target_token);
+
+token* tokenize_string (char* phrase);
+
+str* create_str_list ();
+
+str* insert_str (int line, char *text, str* previous_str);
+
+int remove_str (str* target_str);
+
+str* parse_text (int argc, char* argv[]);
+
+int print_str_text (str* target_str);
+
+int print_str_text_recur (str* target_str);
 
 #endif

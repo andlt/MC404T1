@@ -1,0 +1,693 @@
+/*
+ *  parser.c: módulo que lê o conteúdo do arquivo e o carrega na memória
+ *
+ *  Autor: André Luís L C Tavares
+ *  RA: 116125
+ *  Data de Criação: 27/03/13
+ *  
+ *  Log: Criar Lista ligada para conter cada caracter?
+ *  
+ */
+
+#include "parser.h"
+
+//funções grupo token (cada token contém uma única palavra lida do arquivo de entrada)
+
+token* create_token_list ()
+{
+	//retorna um apontador para o nó cabeça de uma nova lista de tokens
+
+	token* new_token = NULL;
+
+	new_token = malloc(sizeof(token));
+
+	new_token->word = "HEAD_NODE_CODE";
+	new_token->next = NULL;
+	new_token->last = NULL;
+
+	return new_token;
+}
+
+token* insert_token (char *word, token* previous_token)
+{
+	//insere um novo token após previous_token, retorna um apontador para ele
+
+	token* new_token = NULL;
+
+	if(previous_token == NULL){ //validação de previous_token
+		printf("\ninsert_token: parâmetro incorreto; nó anetrior nulo\n");
+		return NULL;
+	}
+	else{
+		new_token = malloc(sizeof(token));
+		if(new_token == NULL){ //teste da alocação de memória
+			printf("A Memória não pode ser alocada!\n");
+		}
+
+		new_token->word = word;
+
+		new_token->last = previous_token;
+		new_token->next = previous_token->next;
+
+		previous_token->next = new_token; //arruma os apontadores
+		return new_token;
+
+	}
+}
+
+token* tokenize_string (char* phrase)
+{
+	//divide uma string em "palavras", retorna uma lista ligada com essas palavras
+
+	token* new_token = NULL, *previous_token = NULL;
+	char* tok;
+
+	new_token = create_token_list();
+	if(new_token == NULL){ //testa a alocação de memória
+			printf("A Memória não pode ser alocada!\n");
+	}
+
+	tok = strtok(phrase, " ");
+	if(tok != NULL){ //adiciona o primeiro elemento após o nó cabeça
+		previous_token = insert_token(tok, new_token);
+		tok = strtok(NULL, " ");
+	}
+	while(tok != NULL){ //adiciona os demais elementos
+		previous_token = insert_token(tok, previous_token);//previous_token);
+		tok = strtok(NULL, " ");
+	}
+
+	while(new_token->last != NULL)
+		new_token = new_token->last;
+
+	return new_token;
+}
+
+//funções grupo str (cada str equivale a uma linha lida do arquivo de entrada
+
+str* create_str_list ()
+{
+	//devolve um apontador para o nó cabeça de uma lista ligada de "frases" (linhas do arquivo de entrada)
+
+	str* new_str = NULL;
+
+	new_str = malloc(sizeof(str));
+
+	new_str->line = HEAD_NODE_CODE;
+	new_str->next = NULL;
+	new_str->last = NULL;
+	new_str->phrase = "Cabeça";
+
+	return new_str;
+}
+
+str* insert_str (int line, char* phrase, str* previous_str)
+{
+	//insere um nó novo após previous_str
+
+	if(previous_str == NULL){
+		printf("\ninsert_str: parâmetro incorreto; nó anetrior nulo\n");
+		return NULL;
+	}
+	else{
+		str* new_str = NULL;
+
+		new_str = malloc(sizeof(str));
+		if(new_str == NULL){
+			printf("A Memória não pode ser alocada!\n");
+		}
+
+		new_str->line = line; //define os campos
+		new_str->phrase = phrase;
+		new_str->words = tokenize_string (phrase);
+
+		new_str->last = previous_str;
+		new_str->next = previous_str->next;
+
+		previous_str->next = new_str; //arruma os apontadores
+
+		return new_str;
+	}
+}
+
+int remove_str (str* target_str)
+{
+	//remove o nó target_str
+
+	target_str->last->next = target_str->next; //arruma os apontadores
+	target_str->next->last = target_str->last;
+
+	free(target_str); //libera a memória
+
+	return 0;
+}
+
+//funções do grupo parse
+
+str* parse_text (int argc, char* argv[])
+{
+	//Lê o arquivo e retorna uma estrutura contendo cada palavra dele
+
+	FILE *file;
+
+	char *read_string = NULL;
+	str *str_list = NULL, *str_last = NULL;//, *aux;
+
+	file = fopen(argv[1], "r"); //abre o arquivo do argumento
+
+	str_last = str_list = create_str_list();
+
+	while(!feof(file)){
+		read_string = malloc(sizeof(char)*TAMANHO);
+		fgets(read_string, TAMANHO, file);
+		str_last = insert_str(NON_INIT_LINE, read_string, str_last); //linha não inicializada
+	}
+
+	fclose(file); //fecha o arquivo
+
+	return str_list;
+}
+
+//funções auxiliares
+
+int print_str_tokens (str* target_str)
+{
+	token* next_word = NULL;
+
+	next_word = target_str->words;
+
+	while(next_word != NULL){
+		printf("%s\n", next_word);
+		next_word = next_word->next;
+	}
+
+	return 0;
+}
+
+int print_str_tokens_recur (str* target_str)
+{
+	if(target_str != NULL){
+		if(print_str_tokens(target_str) == 0){
+			return print_str_tokens_recur(target_str->next);
+		}
+		else{
+			printf("Erro na impressao");
+			return -1;
+		}
+	}
+	else{
+		return 0;
+	}
+}
+
+int print_str_phrase (str* target_str)
+{
+	printf("%s", target_str->phrase);
+
+	return 0;
+}
+
+int print_str_phrase_recur (str* target_str)
+{
+	if(target_str != NULL){
+		if(print_str_phrase(target_str) == 0){
+			return print_str_phrase_recur(target_str->next);
+		}
+		else{
+			printf("Erro na impressao");
+			return -1;
+		}
+	}
+	else{
+		return 0;
+	}
+}
+
+
+_____________________________________________________________________________________
+
+
+
+/*
+ *  definitions.h:
+ *
+ *  Autor: André Luís L C Tavares
+ *  RA: 116125
+ *  Data de Criação: 23/03/13
+ */
+
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
+
+//#include <stdbool.h>
+
+typedef struct mem_word { //estrutura que guarda uma palavra de memória
+	int line;
+	char side; //l para primeira palavra, r para a segunda
+	char* opcode;
+	char* address;
+	struct mem_word* next;
+	struct mem_word* last;
+} mem_word;
+
+void* convert_base (char init_base, char final_base, void* number);
+
+int bin_to_dec (char* bin);
+int bin_to_octa (int bin);
+char* bin_to_hexa (int bin);
+int octa_to_bin (int octa);
+int octa_to_dec (int octa);
+char* octa_to_hexa (int octa);
+int dec_to_bin (int dec);
+int dec_to_octa (int dec);
+char* dec_to_hexa (int dec);
+int hexa_to_bin (char* hexa);
+int hexa_to_octa (char* hexa);
+int hexa_to_dec (char* hexa);
+
+#endif
+
+
+_________________________________________________________________________________
+
+
+
+
+/*
+ *  opcodes.c: tabela com as conversões nome->opcode do trabalho 1, MC404 1s2013
+ *
+ *  Autor: André Luís L C Tavares
+ *  RA: 116125
+ *  Data de Criação: 23/03/13
+ */
+
+#include <stdio.h>
+#include "opcode.h"
+
+char* rec_mneumonic (char* str)
+{
+
+	if (strcmp(str, "LMQ") == 0){
+		return "0A";
+	}
+	else if (strcmp(str, "LMQM") == 0){
+		return "09";
+	}
+	else if (strcmp(str, "ST") == 0){
+		return "21";
+	}
+	else if (strcmp(str, "LD") == 0){
+		return "01";
+	}
+	else if (strcmp(str, "LDN") == 0){
+		return "02";
+	}
+	else if (strcmp(str, "LDMOD") == 0){
+		return "03";
+	}
+	else if (strcmp(str, "JMP") == 0){
+		return "0D";
+		//return "0E";
+	}
+	else if (strcmp(str, "JMPP") == 0){
+		return "0F";
+		//return "10";
+	}
+	else if (strcmp(str, "ADD") == 0){
+		return "05";
+	}
+	else if (strcmp(str, "ADDMOD") == 0){
+		return "07";
+	}
+	else if (strcmp(str, "SUB") == 0){
+		return "06";
+	}
+	else if (strcmp(str, "SUBMOD") == 0){
+		return "08";
+	}
+	else if (strcmp(str, "MUL") == 0){
+		return "0B";
+	}
+	else if (strcmp(str, "DIV") == 0){
+		return "0C";
+	}
+	else if (strcmp(str, "LSH") == 0){
+		return "14";
+	}
+	else if (strcmp(str, "RSH") == 0){
+		return "15";
+	}
+	else if (strcmp(str, "STM") == 0){
+		return "12";
+		//return "13";
+	}
+	else{
+		printf("\nrec_mneumonic: mneumônico incorreto\n");
+		return "error";
+	}
+	return 0;
+}
+
+_________________________________________________________________________
+
+
+
+/*
+ *  label_table.h:
+ *
+ *  Autor: André Luís L C Tavares
+ *  RA: 116125
+ *  Data de Criação: 31/03/13
+ */
+
+#include "label_table.h"
+
+mem_word* insert_word (int line, char side, char* opcode, char* address,
+		mem_word* previous_word)
+{
+	//insere uma nova palavra de memória na lista, após previous_word
+
+	if(previous_word == NULL){
+		printf("\ninsert_word: parâmetro incorreto; palavra anterior nula\n");
+		return NULL;
+	}
+	else{
+	mem_word* new_word = NULL;
+
+	new_word = malloc(sizeof(mem_word));
+	if(new_word == NULL){
+		printf("A Memória não pode ser alocada!\n");
+	}
+
+	new_word->line = line; //define os campos
+	new_word->side = side;
+	new_word->opcode = opcode;
+	new_word->address = address;
+
+	new_word->last = previous_word;
+	new_word->next = previous_word->next;
+
+	previous_word->next = new_word; //arruma os apontadores
+
+	return new_word;
+	}
+}
+
+int remove_word (mem_word* target_word)
+{
+	//remove a palavra target_word
+
+	target_word->last->next = target_word->next; //arruma os apontadores
+	target_word->next->last = target_word->last;
+
+	free(target_word); //libera a memória
+
+	return 0;
+}
+
+//funções do grupo label (cada label contém as informações de um rótulo)
+
+label_node* create_label_table ()
+{
+	//devolve o nó cabeça de uma lista nova
+
+	label_node* new_node = NULL;
+
+	new_node = malloc(sizeof(label_node));
+
+	new_node->line = HEAD_NODE_CODE;
+	new_node->side = 'h';
+	new_node->name = "Cabeça";
+	new_node->next = NULL;
+	new_node->last = NULL;
+
+	return new_node;
+}
+
+label_node* insert_label (int line, char side, char* name, label_node* previous_node)
+{
+	//insere um nó novo após previous_node
+
+	if(previous_node == NULL){
+		printf("\ninsert_label_node: parâmetro incorreto; nó anetrior nulo\n");
+		return NULL;
+	}
+	else{
+		label_node* new_node = NULL;
+
+		new_node = malloc(sizeof(label_node));
+		if(new_node == NULL){
+			printf("A Memória não pode ser alocada!\n");
+		}
+
+		new_node->line = line; //define os campos
+		new_node->side = side;
+		new_node->name = name;
+
+		new_node->last = previous_node;
+		new_node->next = previous_node->next;
+
+		previous_node->next = new_node; //arruma os apontadores
+
+		return new_node;
+	}
+}
+
+int remove_label (label_node* target_node)
+{
+	//remove o nó target_node
+
+	target_node->last->next = target_node->next; //arruma os apontadores
+	target_node->next->last = target_node->last;
+
+	free(target_node); //libera a memória
+
+	return 0;
+
+}
+
+mem_word* fill_label_table (str* parsed_list, label_node* table)
+{
+	int line_count = 0;
+	char side = 'l';
+	label_node* previous_label = NULL;
+	str* next_str = parsed_list;
+
+	if(next_str != NULL){
+		if(next_str->line == HEAD_NODE_CODE){ //pula nó cabeça
+			next_str = next_str->next;
+		}
+	}
+
+	while(next_str != NULL){
+		while(next_str->words != NULL){
+			if(next_str->words->word[strlen(next_str->words->word)-1] == ':'){
+				insert_label(line_count, side, next_str->words->word,table);
+			}
+		}
+		if(next_str->next == NULL){
+			return 0;
+		}
+		else{
+			next_str = next_str->next; //Isso pode dar merda
+			if(side == 'l'){
+				side = 'r';
+			}
+			else { //side == 'r'
+				side = 'l';
+				line_count++;
+			}
+		}
+	}
+
+	return 0;
+}
+
+//funções de escrita do mapa de memória
+
+int write_mem_map (char* map_name, str* parsed_list, mem_word* table){
+
+	FILE *file;
+
+	file = fopen(map_name, "w");
+
+	while(parsed_list != NULL){
+		//do stuff
+		parsed_list = parsed_list->next;
+	}
+
+	fclose(file); //fecha o arquivo
+
+	return 0;
+}
+
+
+_______________________________________________________________________________-
+
+
+
+/*
+ *  parser.c: módulo que lê o conteúdo do arquivo e o carrega na memória
+ *
+ *  Autor: André Luís L C Tavares
+ *  RA: 116125
+ *  Data de Criação: 27/03/13
+ */
+
+#ifndef PARSER_H
+#define PARSER_H
+
+#include <stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+//#include "linked_list.h"
+#include <string.h>
+
+#define TAMANHO 200
+#define HEAD_NODE_CODE -999
+#define NON_INIT_LINE -1
+
+typedef struct token {
+	char* word;
+	struct token* next;
+	struct token* last;
+} token;
+
+typedef struct str { //nó individual da lista ligada
+	int line;
+	char* phrase;
+	token* words;
+	struct str* next;
+	struct str* last;
+} str;
+
+token* create_token_list ();
+
+token* insert_token (char *word, token* previous_str);
+
+int remove_token (token* target_token);
+
+token* tokenize_string (char* phrase);
+
+str* create_str_list ();
+
+str* insert_str (int line, char *text, str* previous_str);
+
+int remove_str (str* target_str);
+
+str* parse_text (int argc, char* argv[]);
+
+int print_str_text (str* target_str);
+
+int print_str_text_recur (str* target_str);
+
+#endif
+
+
+
+__________________________________________________________________________
+
+
+/*
+ *  main.c: módulo principal do trabalho 1, MC404 1s2013
+ *
+ *  Autor: André Luís L C Tavares
+ *  RA: 116125
+ *  Data de Criação: 23/03/13
+ */
+
+#include <stdio.h>
+#include "definitions.h"
+#include "parser.h"
+#include "opcode.h"
+//#include "linked_list.h"
+#include "label_table.h"
+
+int main (int argc, char* argv[])
+{
+	str* parsed_text;
+	label_node* label_table;
+
+	printf("Tah Live!\n");
+
+	parsed_text = parse_text(argc, argv);
+
+	label_table = create_label_table();
+
+
+
+	printf("%s", parsed_text->next->next->next->words->next->next->word);
+
+	printf("Tah dead!\n");
+
+	return 0;
+}
+
+
+______________________________________________________________________________
+
+
+
+/*
+ *  opcodes.h: header da tabela com as conversões nome->opcode do trabalho 1, MC404 1s2013
+ *
+ *  Autor: André Luís L C Tavares
+ *  RA: 116125
+ *  Data de Criação: 23/03/13
+ */
+
+#ifndef OPCODE_H
+#define OPCODE_H
+
+#include <string.h>
+
+char* rec_mneumonic (char* str);
+
+#endif /* OPCODE_H */
+
+
+
+_____________________________________________________________________________________-
+
+
+/*
+ *  label_table.h:
+ *
+ *  Autor: André Luís L C Tavares
+ *  RA: 116125
+ *  Data de Criação: 31/03/13
+ */
+
+#ifndef LABEL_TABLE_H
+#define LABEL_TABLE_H
+
+#include "definitions.h"
+#include "stdlib.h"
+#include "stdio.h"
+#include "parser.h"
+
+typedef struct label_node { //estrutura que guarda uma palavra de memória
+	int line;
+	char side; //l para primeira palavra, r para a segunda
+	char* name;
+	struct label_node* next;
+	struct label_node* last;
+} label_node;
+
+mem_word* insert_word (int line, char side, char* opcode, char* address,
+		mem_word* previous_word);
+
+int remove_word (mem_word* target_node);
+
+label_node* create_label_table ();
+
+label_node* insert_label (int line, char side, char* name, label_node* previous_node);
+
+int remove_label (label_node* target_node);
+
+mem_word* fill_lable_table (str* parsed_list, label_node* table);
+
+int write_mem_map (char* map_name, str* parsed_list, mem_word* table);
+
+#endif /* LABEL_TABLE_H_ */
+
