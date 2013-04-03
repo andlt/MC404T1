@@ -22,11 +22,11 @@ int main (int argc, char* argv[])
 
 	parsed_text = parse_text(argc, argv);
 
-	print_str_tokens_recur(parsed_text);
+	//print_str_tokens_recur(parsed_text);
 
 	label_table = create_label_table();
 
-	fill_label_table(parsed_text, label_table);
+	//fill_label_table(parsed_text, label_table);
 
 	//printf(label_table->next->name);
 	/*while(label_table != NULL){

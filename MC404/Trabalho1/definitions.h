@@ -22,17 +22,17 @@ typedef struct mem_word { //estrutura que guarda uma palavra de memória
 
 void* convert_base (char init_base, char final_base, void* number);
 
-int bin_to_dec (char* bin);
-int bin_to_octa (int bin);
-char* bin_to_hexa (int bin);
-int octa_to_bin (int octa);
-int octa_to_dec (int octa);
-char* octa_to_hexa (int octa);
-int dec_to_bin (int dec);
-int dec_to_octa (int dec);
-char* dec_to_hexa (int dec);
-int hexa_to_bin (char* hexa);
-int hexa_to_octa (char* hexa);
-int hexa_to_dec (char* hexa);
+char* bin_to_dec (char* bin);
+char* bin_to_octa (char* bin);
+char* bin_to_hexa (char* bin);
+char* octa_to_bin (char* octa);
+char* octa_to_dec (char* octa);
+char* octa_to_hexa (char* octa);
+char* dec_to_bin (char* dec);
+char* dec_to_octa (char* dec);
+char* dec_to_hexa (char* dec);
+char* hexa_to_bin (char* hexa);
+char* hexa_to_octa (char* hexa);
+char* hexa_to_dec (char* hexa);
 
 #endif

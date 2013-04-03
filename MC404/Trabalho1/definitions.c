@@ -99,12 +99,14 @@ int octa_to_bin (int octa)
 {
 	return octa;
 }
-
-int octa_to_dec (int octa)
+*/
+char* octa_to_dec (char* octa)
 {
-	return octa;
+	char* dec = NULL;
+	sscanf("%o", octa, "d", dec);
+	return dec;
 }
-
+/*
 char* octa_to_hexa (int octa)
 {
 	return 'c';

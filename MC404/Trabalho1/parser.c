@@ -119,7 +119,7 @@ str* insert_str (int line, char* phrase, str* previous_str)
 
 		new_str->line = line; //define os campos
 		new_str->phrase = phrase;
-		new_str->words = tokenize_string(phrase);
+		new_str->tok = tokenize_string(phrase);
 
 		new_str->last = previous_str;
 		new_str->next = previous_str->next;
@@ -174,7 +174,7 @@ int print_str_tokens (str* target_str)
 {
 	token* next_word = NULL;
 
-	next_word = target_str->words;
+	next_word = target_str->tok;
 
 	while(next_word != NULL){
 		printf("%s\n", next_word->word);
@@ -187,10 +187,11 @@ int print_str_tokens (str* target_str)
 int print_str_tokens_recur (str* target_str)
 {
 	if(target_str != NULL){
-		if(strcmp(target_str->words->word, "HEAD_NODE_CODE")){ //pula nó cabeça
+		if(strcmp(target_str->tok->word, "HEAD_NODE_CODE")){ //pula nó cabeça
 			target_str = target_str->next;
 		}
 		if(print_str_tokens(target_str) == 0){
+			return print_str_tokens_recur(target_str->next);
 		}
 		else{
 			printf("Erro na impressao");

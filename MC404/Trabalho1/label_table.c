@@ -7,6 +7,7 @@
  */
 
 #include "label_table.h"
+#include "opcode.h"
 
 mem_word* insert_word (int line, char side, char* opcode, char* address,
 		mem_word* previous_word)
@@ -125,16 +126,16 @@ mem_word* fill_label_table (str* parsed_list, label_node* table)
 	}
 
 	while(next_str != NULL){
-		if(next_str->words != NULL){
-			if(strcmp(next_str->words->word, "HEAD_NODE_CODE") == 0){ //pula o nó cabeça
-				next_str->words = next_str->words->next;
+		if(next_str->tok != NULL){
+			if(strcmp(next_str->tok->word, "HEAD_NODE_CODE") == 0){ //pula o nó cabeça
+				next_str->tok = next_str->tok->next;
 			}
 		}
-		while(next_str->words != NULL){
-			if(next_str->words->word[strlen(next_str->words->word)-1] == ':'){
-				insert_label(line_count, side, next_str->words->word,table);
+		while(next_str->tok != NULL){
+			if(next_str->tok->word[strlen(next_str->tok->word)-1] == ':'){
+				insert_label(line_count, side, next_str->tok->word,table);
 			}
-			next_str->words = next_str->words->next;
+			next_str->tok = next_str->tok->next;
 		}
 		if(next_str->next == NULL){
 			return 0;
@@ -159,6 +160,7 @@ mem_word* fill_label_table (str* parsed_list, label_node* table)
 int write_mem_map (char* map_name, str* parsed_list, label_node* label_table){
 
 	FILE *file;
+	char* op;
 
 	file = fopen(map_name, "w");
 
@@ -168,22 +170,24 @@ int write_mem_map (char* map_name, str* parsed_list, label_node* label_table){
 		}
 	}
 
+	//print_str_tokens_recur(parsed_list);
 	while(parsed_list != NULL){
-		if(parsed_list->words != NULL){
-			if(strcmp(parsed_list->words->word, "HEAD_NODE_CODE") == 0){ //pula o nó cabeça
-				parsed_list->words = parsed_list->words->next;
+		if(parsed_list->tok != NULL){
+			if(strcmp(parsed_list->tok->word, "HEAD_NODE_CODE") == 0){ //pula o nó cabeça
+				parsed_list->tok = parsed_list->tok->next;
 			}
 		}
-		//printf("%s\n", parsed_list->words->word);
-		print_str_tokens_recur(parsed_list);
-		if(parsed_list->words != NULL)
-			printf("!!%s!!\n", parsed_list->phrase);
-		while(parsed_list->words != NULL){
-			//if(parsed_list->words->word[strlen(parsed_list->words->word)-1] == ':'){
-				fprintf(file, "%s", parsed_list->words->word);
-				printf("%s", parsed_list->words->word);
+		//printf("%s\n", parsed_list->tok->word);
+		//print_str_tokens_recur(parsed_list);
+		//if(parsed_list->tok != NULL)
+			//printf("!!%s!!\n", parsed_list->phrase);
+		while(parsed_list->tok != NULL){
+			//if(parsed_list->tok->word[strlen(parsed_list->tok->word)-1] == ':'){
+				printf("%s\n", parsed_list->tok->word);
+				op = rec_mneumonic(parsed_list->tok->word);
+				fprintf(file, "%s", op);
 			//}
-			parsed_list->words = parsed_list->words->next;
+			parsed_list->tok = parsed_list->tok->next;
 		}
 		if(parsed_list->next == NULL){
 			return 0;

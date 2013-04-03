@@ -27,7 +27,7 @@ typedef struct token {
 typedef struct str { //nó individual da lista ligada
 	int line;
 	char* phrase;
-	token* words;
+	token* tok;
 	struct str* next;
 	struct str* last;
 } str;
