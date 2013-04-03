@@ -126,10 +126,16 @@ mem_word* fill_label_table (str* parsed_list, label_node* table)
 	}
 
 	while(next_str != NULL){
+		if(next_str->words != NULL){
+			if(next_str->words->word == "HEAD_NODE_CODE"){ //pula o nó cabeça
+				next_str->words = next_str->words->next;
+			}
+		}
 		while(next_str->words != NULL){
 			if(next_str->words->word[strlen(next_str->words->word)-1] == ':'){
 				insert_label(line_count, side, next_str->words->word,table);
 			}
+			next_str->words = next_str->words->next;
 		}
 		if(next_str->next == NULL){
 			return 0;
@@ -166,3 +172,4 @@ int write_mem_map (char* map_name, str* parsed_list, mem_word* table){
 
 	return 0;
 }
+

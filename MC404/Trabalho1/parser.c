@@ -4,9 +4,9 @@
  *  Autor: André Luís L C Tavares
  *  RA: 116125
  *  Data de Criação: 27/03/13
- *  
+ *
  *  Log: Criar Lista ligada para conter cada caracter?
- *  
+ *
  */
 
 #include "parser.h"
@@ -77,7 +77,7 @@ token* tokenize_string (char* phrase)
 		tok = strtok(NULL, " ");
 	}
 
-	while(new_token->last != NULL)
+	while(new_token->last != NULL) //retorna o apontador para o primeiro elemento
 		new_token = new_token->last;
 
 	return new_token;
@@ -177,7 +177,7 @@ int print_str_tokens (str* target_str)
 	next_word = target_str->words;
 
 	while(next_word != NULL){
-		printf("%s\n", next_word);
+		printf("%s\n", next_word->word);
 		next_word = next_word->next;
 	}
 

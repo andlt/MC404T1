@@ -1,0 +1,5 @@
+1- Ler o arquivo e escrever cada palavra em uma estrutura1
+2- Ler as palavras da estrutura1 e fazer guardar as labels em uma estrutura2
+3- Ler as palavras da estrutura1 e escrever no arquivo2
+   A- Converter os números para hexa
+   B- Substituir as labels usando estrutura2

@@ -24,9 +24,16 @@ int main (int argc, char* argv[])
 
 	label_table = create_label_table();
 
+	fill_label_table(parsed_text, label_table);
 
-
-	printf("%s", parsed_text->next->next->next->words->next->next->word);
+	//printf(label_table->next->name);
+	/*while(label_table != NULL){
+		printf("a");
+		if(label_table->next != NULL){
+			label_table = label_table->next;
+			printf("%s\n",label_table->name);
+		}
+	}*/
 
 	printf("Tah dead!\n");
 

@@ -33,8 +33,9 @@ label_node* insert_label (int line, char side, char* name, label_node* previous_
 
 int remove_label (label_node* target_node);
 
-mem_word* fill_lable_table (str* parsed_list, label_node* table);
+mem_word* fill_label_table (str* parsed_list, label_node* table);
 
 int write_mem_map (char* map_name, str* parsed_list, mem_word* table);
 
 #endif /* LABEL_TABLE_H_ */
+
