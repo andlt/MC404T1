@@ -111,7 +111,7 @@ int remove_label (label_node* target_node)
 
 }
 
-mem_word* fill_label_table (node* parsed_list)
+mem_word* fill_label_table (str* parsed_list)
 {
 	int line_count = 0;
 	char side = 'l';
@@ -135,7 +135,7 @@ mem_word* fill_label_table (node* parsed_list)
 	return 0;
 }
 
-int write_mem_map (char* map_name, node* parsed_list, mem_word* table){
+int write_mem_map (char* map_name, str* parsed_list, mem_word* table){
 
 	FILE *file;
 

@@ -25,34 +25,32 @@ typedef struct token {
 	struct token* last;
 } token;
 
-typedef struct node { //nó individual da lista ligada
+typedef struct str { //nó individual da lista ligada
 	int line;
 	char* phrase;
 	token* words;
-	struct node* next;
-	struct node* last;
-} node;
+	struct str* next;
+	struct str* last;
+} str;
+
+token* create_token_list ();
+
+token* insert_token (char *word, token* previous_str);
+
+token* tokenize_string (char* phrase);
+
+str* create_str_list ();
+
+str* insert_str (int line, char *text, str* previous_str);
+
+int remove_str (str* target_str);
 
 int parse_text (int argc, char* argv[]);
 
 int parse_line (char* text);
 
-int parse_recur_switch (char* text);
+int print_str_text (str* target_str);
 
-token* create_token_list ();
-
-token* insert_token (char *word, token* previous_node);
-
-token* tokenize_string (char* phrase);
-
-node* create_list ();
-
-node* insert_node (int line, char *text, node* previous_node);
-
-int remove_node (node* target_node);
-
-int print_node_text (node* target_node);
-
-int print_node_text_recur (node* target_node);
+int print_str_text_recur (str* target_str);
 
 #endif

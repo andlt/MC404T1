@@ -82,59 +82,59 @@ token* tokenize_string (char* phrase)
 	return new_token;
 }
 
-str* create_str_list ()
+node* create_line_list ()
 {
 	//devolve um apontador para o nó cabeça de uma lista ligada de "frases" (linhas do arquivo de entrada)
 
-	str* new_str = NULL;
+	node* new_line = NULL;
 
-	new_str = malloc(sizeof(str));
+	new_node = malloc(sizeof(node));
 
-	new_str->line = HEAD_NODE_CODE;
-	new_str->next = NULL;
-	new_str->last = NULL;
-	new_str->phrase = "Cabeça";
+	new_node->line = HEAD_NODE_CODE;
+	new_node->next = NULL;
+	new_node->last = NULL;
+	new_node->phrase = "Cabeça";
 
-	return new_str;
+	return new_node;
 }
 
-str* insert_str (int line, char* phrase, str* previous_str)
+node* insert_node (int line, char* phrase, node* previous_node)
 {
-	//insere um nó novo após previous_str
+	//insere um nó novo após previous_node
 
-	if(previous_str == NULL){
-		printf("\ninsert_str: parâmetro incorreto; nó anetrior nulo\n");
+	if(previous_node == NULL){
+		printf("\ninsert_node: parâmetro incorreto; nó anetrior nulo\n");
 		return NULL;
 	}
 	else{
-		str* new_str = NULL;
+		node* new_node = NULL;
 
-		new_str = malloc(sizeof(str));
-		if(new_str == NULL){
+		new_node = malloc(sizeof(node));
+		if(new_node == NULL){
 			printf("A Memória não pode ser alocada!\n");
 		}
 
-		new_str->line = line; //define os campos
-		new_str->phrase = phrase;
-		new_str->words = tokenize_string (phrase);
+		new_node->line = line; //define os campos
+		new_node->phrase = phrase;
+		new_node->words = tokenize_string (phrase);
 
-		new_str->last = previous_str;
-		new_str->next = previous_str->next;
+		new_node->last = previous_node;
+		new_node->next = previous_node->next;
 
-		previous_str->next = new_str; //arruma os apontadores
+		previous_node->next = new_node; //arruma os apontadores
 
-		return new_str;
+		return new_node;
 	}
 }
 
-int remove_str (str* target_str)
+int remove_node (node* target_node)
 {
-	//remove o nó target_str
+	//remove o nó target_node
 
-	target_str->last->next = target_str->next; //arruma os apontadores
-	target_str->next->last = target_str->last;
+	target_node->last->next = target_node->next; //arruma os apontadores
+	target_node->next->last = target_node->last;
 
-	free(target_str); //libera a memória
+	free(target_node); //libera a memória
 
 	return 0;
 }
@@ -144,16 +144,16 @@ int parse_text (int argc, char* argv[])
 	FILE *file;
 	//int i = 0;
 	char *read_string = NULL;//, read_char = '0';
-	str *list = NULL, *list_last = NULL;//, *aux;
+	node *list = NULL, *list_last = NULL;//, *aux;
 
 	file = fopen(argv[1], "r"); //abre o arquivo do argumento
 
-	list_last = list = create_str_list();
+	list_last = list = create_line_list();
 
 	while(!feof(file)){
 		read_string = malloc(sizeof(char)*TAMANHO);
 		fgets(read_string, TAMANHO, file);
-		list_last = insert_str(NON_INIT_LINE, read_string, list_last); //linha não inicializada
+		list_last = insert_node(NON_INIT_LINE, read_string, list_last); //linha não inicializada
 	}
 
 	while(list != NULL){
@@ -176,18 +176,18 @@ int parse_line (char* text)
 	return 0;
 }
 
-int print_str_phrase (str* target_str)
+int print_node_phrase (node* target_node)
 {
-	printf("%s", target_str->phrase);
+	printf("%s", target_node->phrase);
 
 	return 0;
 }
 
-int print_str_phrase_recur (str* target_str)
+int print_node_phrase_recur (node* target_node)
 {
-	if(target_str != NULL){
-		if(print_str_phrase(target_str) == 0){
-			return print_str_phrase_recur(target_str->next);
+	if(target_node != NULL){
+		if(print_node_phrase(target_node) == 0){
+			return print_node_phrase_recur(target_node->next);
 		}
 		else{
 			printf("Erro na impressao");
