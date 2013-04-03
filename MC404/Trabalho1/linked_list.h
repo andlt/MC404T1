@@ -5,7 +5,7 @@
  *  RA: 116125
  *  Data de Criação: 28/03/13
  */
-
+/*
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
@@ -48,3 +48,4 @@ int print_node_text (node* target_node);
 int print_node_text_recur (node* target_node);
 
 #endif /* LINKED_LIST_H */
+

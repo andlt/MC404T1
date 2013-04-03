@@ -12,7 +12,7 @@
 #include "definitions.h"
 #include "stdlib.h"
 #include "stdio.h"
-#include "linked_list.h"
+#include "parser.h"
 
 typedef struct label_node { //estrutura que guarda uma palavra de memória
 	int line;

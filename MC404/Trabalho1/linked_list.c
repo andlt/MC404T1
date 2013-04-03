@@ -5,7 +5,7 @@
  *  RA: 116125
  *  Data de Criação: 28/03/13
  */
-
+/*
 #include "linked_list.h"
 #include <stdlib.h>
 
@@ -159,3 +159,4 @@ int print_node_phrase_recur (node* target_node)
 		return 0;
 	}
 }
+*/
