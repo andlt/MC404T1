@@ -48,8 +48,12 @@ int remove_str (str* target_str);
 
 str* parse_text (int argc, char* argv[]);
 
-int print_str_text (str* target_str);
+int print_str_tokens (str* target_str);
 
-int print_str_text_recur (str* target_str);
+int print_str_tokens_recur (str* target_str);
+
+int print_str_phrase (str* target_str);
+
+int print_str_phrase_recur (str* target_str);
 
 #endif

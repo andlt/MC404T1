@@ -168,25 +168,30 @@ int write_mem_map (char* map_name, str* parsed_list, label_node* label_table){
 		}
 	}
 
-	printf("Hey2\n");
 	while(parsed_list != NULL){
 		if(parsed_list->words != NULL){
 			if(strcmp(parsed_list->words->word, "HEAD_NODE_CODE") == 0){ //pula o nó cabeça
 				parsed_list->words = parsed_list->words->next;
 			}
 		}
+		//printf("%s\n", parsed_list->words->word);
+		print_str_tokens_recur(parsed_list);
+		if(parsed_list->words != NULL)
+			printf("!!%s!!\n", parsed_list->phrase);
 		while(parsed_list->words != NULL){
 			//if(parsed_list->words->word[strlen(parsed_list->words->word)-1] == ':'){
 				fprintf(file, "%s", parsed_list->words->word);
+				printf("%s", parsed_list->words->word);
 			//}
 			parsed_list->words = parsed_list->words->next;
 		}
-		printf("Hey3\n");
+		if(parsed_list->next == NULL){
+			return 0;
+		}
 		parsed_list = parsed_list->next;
 	}
 
 	fclose(file); //fecha o arquivo
-	printf("Hey F\n");
 
 	return 0;
 }
