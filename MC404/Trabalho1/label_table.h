@@ -10,8 +10,8 @@
 #define LABEL_TABLE_H
 
 #include "definitions.h"
-#include "stdlib.h"
-#include "stdio.h"
+#include <stdlib.h>
+#include <stdio.h>
 #include "parser.h"
 
 typedef struct label_node { //estrutura que guarda uma palavra de memória
@@ -35,7 +35,7 @@ int remove_label (label_node* target_node);
 
 mem_word* fill_label_table (str* parsed_list, label_node* table);
 
-int write_mem_map (char* map_name, str* parsed_list, mem_word* table);
+int write_mem_map (char* map_name, str* parsed_list, label_node* table);
 
 #endif /* LABEL_TABLE_H_ */
 

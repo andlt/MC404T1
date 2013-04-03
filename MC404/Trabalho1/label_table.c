@@ -116,7 +116,6 @@ mem_word* fill_label_table (str* parsed_list, label_node* table)
 {
 	int line_count = 0;
 	char side = 'l';
-	label_node* previous_label = NULL;
 	str* next_str = parsed_list;
 
 	if(next_str != NULL){
@@ -127,7 +126,7 @@ mem_word* fill_label_table (str* parsed_list, label_node* table)
 
 	while(next_str != NULL){
 		if(next_str->words != NULL){
-			if(next_str->words->word == "HEAD_NODE_CODE"){ //pula o nó cabeça
+			if(strcmp(next_str->words->word, "HEAD_NODE_CODE") == 0){ //pula o nó cabeça
 				next_str->words = next_str->words->next;
 			}
 		}
@@ -157,18 +156,37 @@ mem_word* fill_label_table (str* parsed_list, label_node* table)
 
 //funções de escrita do mapa de memória
 
-int write_mem_map (char* map_name, str* parsed_list, mem_word* table){
+int write_mem_map (char* map_name, str* parsed_list, label_node* label_table){
 
 	FILE *file;
 
 	file = fopen(map_name, "w");
 
+	if(parsed_list != NULL){
+		if(parsed_list->line == HEAD_NODE_CODE){ //pula nó cabeça
+			parsed_list = parsed_list->next;
+		}
+	}
+
+	printf("Hey2\n");
 	while(parsed_list != NULL){
-		//do stuff
+		if(parsed_list->words != NULL){
+			if(strcmp(parsed_list->words->word, "HEAD_NODE_CODE") == 0){ //pula o nó cabeça
+				parsed_list->words = parsed_list->words->next;
+			}
+		}
+		while(parsed_list->words != NULL){
+			//if(parsed_list->words->word[strlen(parsed_list->words->word)-1] == ':'){
+				fprintf(file, "%s", parsed_list->words->word);
+			//}
+			parsed_list->words = parsed_list->words->next;
+		}
+		printf("Hey3\n");
 		parsed_list = parsed_list->next;
 	}
 
 	fclose(file); //fecha o arquivo
+	printf("Hey F\n");
 
 	return 0;
 }

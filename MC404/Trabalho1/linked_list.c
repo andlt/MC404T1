@@ -5,10 +5,9 @@
  *  RA: 116125
  *  Data de Criação: 28/03/13
  */
-/*
-#include "linked_list.h"
-#include <stdlib.h>
 
+#include <stdlib.h>
+/*
 token* create_token_list ()
 {
 	//devolve o nó cabeça de uma lista nova

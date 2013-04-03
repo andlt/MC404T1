@@ -76,12 +76,12 @@
 /*
 int bin_to_dec (char* bin)
 {
-	/*int dec = 0, len = strlen(bin), base = 2;
+	int dec = 0, len = strlen(bin), base = 2;
 	for(i = 1; i <= len; i++){
 		if(bin[len-i] == 1){
 			dec = dec +
 		}
-	}*//*
+	}
 	return 0;
 }
 

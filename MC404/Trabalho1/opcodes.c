@@ -11,6 +11,7 @@
 
 char* rec_mneumonic (char* str)
 {
+	//converte um mneumonico para ser respectivo opcode
 
 	if (strcmp(str, "LMQ") == 0){
 		return "0A";

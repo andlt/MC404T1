@@ -34,6 +34,8 @@ int main (int argc, char* argv[])
 			printf("%s\n",label_table->name);
 		}
 	}*/
+printf("Hey\n");
+	write_mem_map(argv[2], parsed_text, label_table);
 
 	printf("Tah dead!\n");
 
