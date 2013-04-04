@@ -187,20 +187,23 @@ int print_str_tokens (str* target_str)
 int print_str_tokens_recur (str* target_str)
 {
 	if(target_str != NULL){
-		if(strcmp(target_str->tok->word, "HEAD_NODE_CODE")){ //pula nó cabeça
-			target_str = target_str->next;
-		}
-		if(print_str_tokens(target_str) == 0){
-			return print_str_tokens_recur(target_str->next);
-		}
-		else{
-			printf("Erro na impressao");
-			return -1;
+		if(target_str->tok != NULL){
+			if(strcmp(target_str->tok->word, "HEAD_NODE_CODE")){ //pula nó cabeça
+				target_str = target_str->next;
+			}
+			if(print_str_tokens(target_str) == 0){
+				return print_str_tokens_recur(target_str->next);
+			}
+			else{
+				printf("Erro na impressao");
+				return -1;
+			}
 		}
 	}
 	else{
 		return 0;
 	}
+	return 0;
 }
 
 int print_str_phrase (str* target_str)
