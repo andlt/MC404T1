@@ -22,7 +22,7 @@ int main (int argc, char* argv[])
 
 	parsed_text = parse_text(argc, argv);
 
-	print_str_tokens_recur(parsed_text);
+	//print_str_tokens_recur(parsed_text);
 
 	label_table = create_label_table();
 
@@ -36,8 +36,12 @@ int main (int argc, char* argv[])
 			printf("%s\n",label_table->name);
 		}
 	}*/
-
+	/*str* hurp = NULL;
+	hurp->tok->word*/
+	print_str_tokens_recur(parsed_text);
 	write_mem_map(argv[2], parsed_text, label_table);
+
+	//printf("%s\n", rec_mneumonic("LMQ"));
 
 	printf("Tah dead!\n");
 

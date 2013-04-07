@@ -183,7 +183,7 @@ int write_mem_map (char* map_name, str* parsed_list, label_node* label_table){
 			//printf("!!%s!!\n", parsed_list->phrase);
 		while(parsed_list->tok != NULL){
 			//if(parsed_list->tok->word[strlen(parsed_list->tok->word)-1] == ':'){
-				printf("%s\n", parsed_list->tok->word);
+				//printf("%s\n", parsed_list->tok->word);
 				op = rec_mneumonic(parsed_list->tok->word);
 				fprintf(file, "%s", op);
 			//}

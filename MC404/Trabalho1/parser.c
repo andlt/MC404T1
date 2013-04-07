@@ -67,14 +67,16 @@ token* tokenize_string (char* phrase)
 			printf("A Memória não pode ser alocada!\n");
 	}
 
-	tok = strtok(phrase, " ");
+	tok = strtok(phrase, " ,\n\r\o\t()");
 	if(tok != NULL){ //adiciona o primeiro elemento após o nó cabeça
 		previous_token = insert_token(tok, new_token);
-		tok = strtok(NULL, " ");
+		printf("%s\n", tok);
+		tok = strtok(NULL, " ,\n\r\o\t()");
 	}
 	while(tok != NULL){ //adiciona os demais elementos
 		previous_token = insert_token(tok, previous_token);//previous_token);
-		tok = strtok(NULL, " ");
+		printf("%s\n", tok);
+		tok = strtok(NULL, " ,\n\r\o\t()");
 	}
 
 	while(new_token->last != NULL) //retorna o apontador para o primeiro elemento
@@ -187,12 +189,16 @@ int print_str_tokens (str* target_str)
 int print_str_tokens_recur (str* target_str)
 {
 	if(target_str != NULL){
+		printf("if 1 == true\n");
 		if(target_str->tok != NULL){
+			printf("if 2 == true\n");
 			if(strcmp(target_str->tok->word, "HEAD_NODE_CODE")){ //pula nó cabeça
 				target_str = target_str->next;
+				printf("if 3 == true\n");
 			}
 			if(print_str_tokens(target_str) == 0){
 				return print_str_tokens_recur(target_str->next);
+				printf("if 4 == true\n");
 			}
 			else{
 				printf("Erro na impressao");
@@ -201,6 +207,7 @@ int print_str_tokens_recur (str* target_str)
 		}
 	}
 	else{
+		printf("if 1 == false\n");
 		return 0;
 	}
 	return 0;
