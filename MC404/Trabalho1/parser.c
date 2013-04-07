@@ -11,80 +11,6 @@
 
 #include "parser.h"
 
-//funções grupo token (cada token contém uma única palavra lida do arquivo de entrada)
-
-token* create_token_list ()
-{
-	//retorna um apontador para o nó cabeça de uma nova lista de tokens
-
-	token* new_token = NULL;
-
-	new_token = malloc(sizeof(token));
-
-	new_token->word = "HEAD_NODE_CODE";
-	new_token->next = NULL;
-	new_token->last = NULL;
-
-	return new_token;
-}
-
-token* insert_token (char *word, token* previous_token)
-{
-	//insere um novo token após previous_token, retorna um apontador para ele
-
-	token* new_token = NULL;
-
-	if(previous_token == NULL){ //validação de previous_token
-		printf("\ninsert_token: parâmetro incorreto; nó anetrior nulo\n");
-		return NULL;
-	}
-	else{
-		new_token = malloc(sizeof(token));
-		if(new_token == NULL){ //teste da alocação de memória
-			printf("A Memória não pode ser alocada!\n");
-		}
-
-		new_token->word = word;
-
-		new_token->last = previous_token;
-		new_token->next = previous_token->next;
-
-		previous_token->next = new_token; //arruma os apontadores
-		return new_token;
-
-	}
-}
-
-token* tokenize_string (char* phrase)
-{
-	//divide uma string em "palavras", retorna uma lista ligada com essas palavras
-
-	token* new_token = NULL, *previous_token = NULL;
-	char* tok;
-
-	new_token = create_token_list();
-	if(new_token == NULL){ //testa a alocação de memória
-			printf("A Memória não pode ser alocada!\n");
-	}
-
-	tok = strtok(phrase, " ,\n\r\o\t()");
-	if(tok != NULL){ //adiciona o primeiro elemento após o nó cabeça
-		previous_token = insert_token(tok, new_token);
-		printf("%s\n", tok);
-		tok = strtok(NULL, " ,\n\r\o\t()");
-	}
-	while(tok != NULL){ //adiciona os demais elementos
-		previous_token = insert_token(tok, previous_token);//previous_token);
-		printf("%s\n", tok);
-		tok = strtok(NULL, " ,\n\r\o\t()");
-	}
-
-	while(new_token->last != NULL) //retorna o apontador para o primeiro elemento
-		new_token = new_token->last;
-
-	return new_token;
-}
-
 //funções grupo str (cada str equivale a uma linha lida do arquivo de entrada
 
 str* create_str_list ()
@@ -121,7 +47,7 @@ str* insert_str (int line, char* phrase, str* previous_str)
 
 		new_str->line = line; //define os campos
 		new_str->phrase = phrase;
-		new_str->tok = tokenize_string(phrase);
+		//new_str->tok = tokenize_string(phrase);
 
 		new_str->last = previous_str;
 		new_str->next = previous_str->next;
@@ -148,7 +74,7 @@ int remove_str (str* target_str)
 
 str* parse_text (int argc, char* argv[])
 {
-	//Lê o arquivo e retorna uma estrutura contendo cada palavra dele
+	//Lê o arquivo e retorna uma estrutura contendo cada linha dele
 
 	FILE *file;
 
@@ -171,47 +97,6 @@ str* parse_text (int argc, char* argv[])
 }
 
 //funções auxiliares
-
-int print_str_tokens (str* target_str)
-{
-	token* next_word = NULL;
-
-	next_word = target_str->tok;
-
-	while(next_word != NULL){
-		printf("%s\n", next_word->word);
-		next_word = next_word->next;
-	}
-
-	return 0;
-}
-
-int print_str_tokens_recur (str* target_str)
-{
-	if(target_str != NULL){
-		printf("if 1 == true\n");
-		if(target_str->tok != NULL){
-			printf("if 2 == true\n");
-			if(strcmp(target_str->tok->word, "HEAD_NODE_CODE")){ //pula nó cabeça
-				target_str = target_str->next;
-				printf("if 3 == true\n");
-			}
-			if(print_str_tokens(target_str) == 0){
-				return print_str_tokens_recur(target_str->next);
-				printf("if 4 == true\n");
-			}
-			else{
-				printf("Erro na impressao");
-				return -1;
-			}
-		}
-	}
-	else{
-		printf("if 1 == false\n");
-		return 0;
-	}
-	return 0;
-}
 
 int print_str_phrase (str* target_str)
 {

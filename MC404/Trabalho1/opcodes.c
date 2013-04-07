@@ -69,7 +69,7 @@ char* rec_mneumonic (char* str)
 	}
 	else{
 		printf("\nrec_mneumonic: %s não é um mneumônico valido\n", str);
-		return "error";
+		return UNREC_MNEM;
 	}
 	return 0;
 }
