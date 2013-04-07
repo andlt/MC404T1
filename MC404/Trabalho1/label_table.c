@@ -164,8 +164,8 @@ char* get_real_address (char* token)
 char* read_line(char* line)
 {
 	char* tok = NULL;
-	char* result = "";
-	int i = 0;
+	char* result = malloc(sizeof(char)*WORD_SIZE);
+	//int i = 0;
 
 	if(line == NULL){
 		printf("Error: read_line : received null line");
@@ -173,24 +173,26 @@ char* read_line(char* line)
 	}
 
 	//get directives
-	for(i = 0; line[i] != ' ' && line[i] != '.'; i++){
+	/*for(i = 0; line[i] != ' ' && line[i] != '.'; i++){
 		if(line[i] == '.'){
 			printf("Directive found!\n");
 		}
-	}
-
+	}*/
+	printf("%s\n", line);
 	tok = strtok(line, " ,\n\r\0\t()");
 	if(tok != NULL){
-		printf("%s\n", tok);
-		if(strcmp(rec_mneumonic(tok), UNREC_MNEM) == 0){
-			strcat(result, rec_mneumonic(tok));
+		char* mnem = rec_mneumonic(tok);
+		if(strcmp(mnem, UNREC_MNEM) != 0){
+			strcat(result, mnem);
 		}
 		tok = strtok(NULL, " ,\n\r\0\t()");
+		if(tok == NULL){
+			strcat(result, " 000");  //adiciona um endereço qualquer para instruções sem endereço (como LMQ)
+		}
 	}
 	strcat(result, " ");
 	if(tok != NULL){
 		strcat(result, get_real_address(tok));
-		tok = strtok(NULL, " ,\n\r\0\t()");
 	}
 
 	return result;

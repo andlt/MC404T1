@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include "parser.h"
 
+#define WORD_SIZE 8//"AA AAA\0"
+
 typedef struct label_node { //estrutura que guarda uma palavra de memória
 	int line;
 	char side; //l para primeira palavra, r para a segunda
