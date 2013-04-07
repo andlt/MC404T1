@@ -32,6 +32,9 @@ int remove_label (label_node* target_node);
 
 label_node* fill_label_table (str* parsed_list, label_node* table);
 */
+
+int label_exists(char* label);
+
 char* get_real_address (char* token);
 
 char* read_line(char* line);

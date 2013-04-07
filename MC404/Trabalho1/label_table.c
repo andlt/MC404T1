@@ -114,6 +114,13 @@ label_node* fill_label_table (str* parsed_list, label_node* table)
 }
 */
 
+int label_exists(char* label)
+{
+	//retorna 1 se o rótulo label existe na lista de rótulos, retorna 0 caso contrário
+
+	return 0;
+}
+
 //funções de escrita do mapa de memória
 
 char* str_cpy (char* str, int start, int end)
@@ -146,6 +153,8 @@ char* get_real_address (char* token)
 {
 	//recebe um token contendo o código referente a um registrador na memória do IAS. Esse código deve ser na forma M(XXX), onde XXX é o endereço do registrador. Devolveremos o valor de XXX em hexa
 
+	char* address = NULL;
+
 	if(strlen(token) < 4){ //não possui o tamanho mínimo -> M(x)
 		printf("Error: get_real_address : endereço do registrador pequeno de mais (mínimo 4 caracteres).\n");
 		return "error";
@@ -156,9 +165,14 @@ char* get_real_address (char* token)
 		return "error";
 	}
 
-	//testar rótulos
+	address = str_cpy(token, 2, strlen(token)-2);
 
-	return str_cpy(token, 2, strlen(token)-2);
+	//testar rótulos
+	if(label_exists(address)){
+		//substituir address por label
+	}
+
+	return address;
 }
 
 char* read_line(char* line)
