@@ -1,4 +1,9 @@
 LMQ
-LMQM M(0)
+LMQM M(300)
 ST M(0)
+LD M(0)
+LMQM M(300)
+ST M(0)
+LD M(101)
+ST M(100)
 LD M(0)

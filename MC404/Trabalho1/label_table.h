@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include "parser.h"
 
+#define WORD_SIZE 8//"AA AAA\0"
+
 typedef struct label_node { //estrutura que guarda uma palavra de memória
 	int line;
 	char side; //l para primeira palavra, r para a segunda
@@ -21,19 +23,21 @@ typedef struct label_node { //estrutura que guarda uma palavra de memória
 	struct label_node* next;
 	struct label_node* last;
 } label_node;
-
-mem_word* insert_word (int line, char side, char* opcode, char* address,
-		mem_word* previous_word);
-
-int remove_word (mem_word* target_node);
-
+/*
 label_node* create_label_table ();
 
 label_node* insert_label (int line, char side, char* name, label_node* previous_node);
 
 int remove_label (label_node* target_node);
 
-mem_word* fill_label_table (str* parsed_list, label_node* table);
+label_node* fill_label_table (str* parsed_list, label_node* table);
+*/
+
+int label_exists(char* label);
+
+char* get_real_address (char* token);
+
+char* read_line(char* line);
 
 int write_mem_map (char* map_name, str* parsed_list, label_node* table);
 

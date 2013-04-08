@@ -11,6 +11,8 @@
 
 #include <string.h>
 
+#define UNREC_MNEM "unrec_mnem"
+
 char* rec_mneumonic (char* str);
 
 #endif /* OPCODE_H */

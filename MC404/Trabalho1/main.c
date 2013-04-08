@@ -16,15 +16,15 @@
 int main (int argc, char* argv[])
 {
 	str* parsed_text;
-	label_node* label_table;
+	label_node* label_table = NULL;
 
 	printf("Tah Live!\n");
 
 	parsed_text = parse_text(argc, argv);
 
-	//print_str_tokens_recur(parsed_text);
+	//printf("%s\n", get_real_address("M(400)"));
 
-	label_table = create_label_table();
+	//label_table = create_label_table();
 
 	//fill_label_table(parsed_text, label_table);
 
@@ -38,7 +38,7 @@ int main (int argc, char* argv[])
 	}*/
 	/*str* hurp = NULL;
 	hurp->tok->word*/
-	print_str_tokens_recur(parsed_text);
+	//print_str_tokens_recur(parsed_text);
 	write_mem_map(argv[2], parsed_text, label_table);
 
 	//printf("%s\n", rec_mneumonic("LMQ"));

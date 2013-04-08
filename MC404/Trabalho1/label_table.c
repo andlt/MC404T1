@@ -9,51 +9,9 @@
 #include "label_table.h"
 #include "opcode.h"
 
-mem_word* insert_word (int line, char side, char* opcode, char* address,
-		mem_word* previous_word)
-{
-	//insere uma nova palavra de memória na lista, após previous_word
-
-	if(previous_word == NULL){
-		printf("\ninsert_word: parâmetro incorreto; palavra anterior nula\n");
-		return NULL;
-	}
-	else{
-	mem_word* new_word = NULL;
-
-	new_word = malloc(sizeof(mem_word));
-	if(new_word == NULL){
-		printf("A Memória não pode ser alocada!\n");
-	}
-
-	new_word->line = line; //define os campos
-	new_word->side = side;
-	new_word->opcode = opcode;
-	new_word->address = address;
-
-	new_word->last = previous_word;
-	new_word->next = previous_word->next;
-
-	previous_word->next = new_word; //arruma os apontadores
-
-	return new_word;
-	}
-}
-
-int remove_word (mem_word* target_word)
-{
-	//remove a palavra target_word
-
-	target_word->last->next = target_word->next; //arruma os apontadores
-	target_word->next->last = target_word->last;
-
-	free(target_word); //libera a memória
-
-	return 0;
-}
 
 //funções do grupo label (cada label contém as informações de um rótulo)
-
+/*
 label_node* create_label_table ()
 {
 	//devolve o nó cabeça de uma lista nova
@@ -113,7 +71,7 @@ int remove_label (label_node* target_node)
 
 }
 
-mem_word* fill_label_table (str* parsed_list, label_node* table)
+label_node* fill_label_table (str* parsed_list, label_node* table)
 {
 	int line_count = 0;
 	char side = 'l';
@@ -154,45 +112,145 @@ mem_word* fill_label_table (str* parsed_list, label_node* table)
 
 	return 0;
 }
+*/
+
+int label_exists(char* label)
+{
+	//retorna 1 se o rótulo label existe na lista de rótulos, retorna 0 caso contrário
+
+	return 0;
+}
 
 //funções de escrita do mapa de memória
 
-int write_mem_map (char* map_name, str* parsed_list, label_node* label_table){
+char* str_cpy (char* str, int start, int end)
+{
+	// devolve uma string com o conteúdo de str[start] até (incluindo) str[end]
+
+	char* copy = NULL;
+	int i; //contador
+
+	if(start < 0){ //testa o valor de in;icio
+		printf("Error: str_cpy início menor que 0.\n");
+		start = 0;
+	}
+	if(strlen(str)-1 < end){ //testa o valor do fim
+		printf("Error: str_cpy fim menor que o tamanho da string.\n");
+		end = strlen(str);
+	}
+
+	copy = malloc(sizeof(char)*(end + 2 - start)); //aloca o vetor da copia
+
+	for(i = 0 + start; i <= end ; i++){ //percorre str de start a end, adiciona em copy de 0 a end-start
+		copy[i-start] = str[i];
+	}
+	copy[end+1-start] = '\0'; //adiciona o caracter de fim de string
+
+	return copy;
+}
+
+char* get_real_address (char* token)
+{
+	//recebe um token contendo o código referente a um registrador na memória do IAS. Esse código deve ser na forma M(XXX), onde XXX é o endereço do registrador. Devolveremos o valor de XXX em hexa
+
+	char* address = NULL;
+
+	if(strlen(token) < 4){ //não possui o tamanho mínimo -> M(x)
+		printf("Error: get_real_address : endereço do registrador pequeno de mais (mínimo 4 caracteres).\n");
+		return "error";
+	}
+
+	if((token[0] != 'M' && token[0] != 'm') || (token[1] != '(')){
+		printf("Error: get_real_address : endereço do registrador não começa com 'M(' ou 'm('.\n");
+		return "error";
+	}
+
+	address = str_cpy(token, 2, strlen(token)-2);
+	if(strlen(address) == 1 || strlen(address) == 2){ //workaround nojento
+		char* aux = malloc(sizeof(char)*5);
+		aux[0] = '0';
+		aux[1] = '\0';
+		if(strlen(address) == 1){
+			aux[1] = '0';
+			aux[2] = '\0';
+		}
+		address = strcat(aux, address);
+	}
+	if(strlen(address) == 2){
+
+	}
+	//testar rótulos
+	if(label_exists(address)){
+		//substituir address por label
+	}
+
+	return address;
+}
+
+char* read_line(char* line)
+{
+	char* tok = NULL;
+	char* result = malloc(sizeof(char)*WORD_SIZE);
+	//int i = 0;
+
+	if(line == NULL){
+		printf("Error: read_line : received null line");
+		return "error";
+	}
+
+	//get directives
+	/*for(i = 0; line[i] != ' ' && line[i] != '.'; i++){
+		if(line[i] == '.'){
+			printf("Directive found!\n");
+		}
+	}*/
+	printf("%s\n", line);
+	tok = strtok(line, " ,\n\r\0\t()");
+	if(tok != NULL){
+		char* mnem = rec_mneumonic(tok);
+		if(strcmp(mnem, UNREC_MNEM) != 0){
+			strcat(result, mnem);
+		}
+		tok = strtok(NULL, " ,\n\r\0\t()");
+		if(tok == NULL){
+			strcat(result, " 000");  //adiciona um endereço qualquer para instruções sem endereço (como LMQ)
+		}
+	}
+	strcat(result, " ");
+	if(tok != NULL){
+		strcat(result, get_real_address(tok));
+	}
+
+	return result;
+}
+
+int write_mem_map (char* map_name, str* read_list, label_node* label_table){
 
 	FILE *file;
-	char* op;
+	int line = 0;
 
 	file = fopen(map_name, "w");
 
-	if(parsed_list != NULL){
-		if(parsed_list->line == HEAD_NODE_CODE){ //pula nó cabeça
-			parsed_list = parsed_list->next;
+	if(read_list != NULL){
+		if(read_list->line == HEAD_NODE_CODE){ //pula nó cabeça
+			read_list = read_list->next;
 		}
 	}
 
-	//print_str_tokens_recur(parsed_list);
-	while(parsed_list != NULL){
-		if(parsed_list->tok != NULL){
-			if(strcmp(parsed_list->tok->word, "HEAD_NODE_CODE") == 0){ //pula o nó cabeça
-				parsed_list->tok = parsed_list->tok->next;
-			}
-		}
-		//printf("%s\n", parsed_list->tok->word);
-		//print_str_tokens_recur(parsed_list);
-		//if(parsed_list->tok != NULL)
-			//printf("!!%s!!\n", parsed_list->phrase);
-		while(parsed_list->tok != NULL){
-			//if(parsed_list->tok->word[strlen(parsed_list->tok->word)-1] == ':'){
-				//printf("%s\n", parsed_list->tok->word);
-				op = rec_mneumonic(parsed_list->tok->word);
-				fprintf(file, "%s", op);
-			//}
-			parsed_list->tok = parsed_list->tok->next;
-		}
-		if(parsed_list->next == NULL){
+	while(read_list != NULL){
+		fprintf(file, "%03d", line);
+		fprintf(file, " %s", read_line(read_list->phrase));
+		if(read_list->next == NULL){
 			return 0;
 		}
-		parsed_list = parsed_list->next;
+		read_list = read_list->next;
+		fprintf(file, " %s", read_line(read_list->phrase));
+		if(read_list->next == NULL){
+			return 0;
+		}
+		read_list = read_list->next;
+		fprintf(file, "\n");
+		line++;
 	}
 
 	fclose(file); //fecha o arquivo

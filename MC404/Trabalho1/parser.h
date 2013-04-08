@@ -32,14 +32,6 @@ typedef struct str { //nó individual da lista ligada
 	struct str* last;
 } str;
 
-token* create_token_list ();
-
-token* insert_token (char *word, token* previous_str);
-
-int remove_token (token* target_token);
-
-token* tokenize_string (char* phrase);
-
 str* create_str_list ();
 
 str* insert_str (int line, char *text, str* previous_str);
@@ -47,10 +39,6 @@ str* insert_str (int line, char *text, str* previous_str);
 int remove_str (str* target_str);
 
 str* parse_text (int argc, char* argv[]);
-
-int print_str_tokens (str* target_str);
-
-int print_str_tokens_recur (str* target_str);
 
 int print_str_phrase (str* target_str);
 
