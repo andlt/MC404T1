@@ -23,10 +23,11 @@ int main (int argc, char* argv[])
 	parsed_text = parse_text(argc, argv);
 
 	//printf("%s\n", get_real_address("M(400)"));
-
+printf("Aqui\n");
 	//label_table = create_label_table();
+printf("Ali\n");
 
-	//fill_label_table(parsed_text, label_table);
+	fill_label_table(parsed_text, label_table);
 
 	//printf(label_table->next->name);
 	/*while(label_table != NULL){

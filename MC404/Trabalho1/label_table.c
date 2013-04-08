@@ -11,7 +11,7 @@
 
 
 //funções do grupo label (cada label contém as informações de um rótulo)
-/*
+
 label_node* create_label_table ()
 {
 	//devolve o nó cabeça de uma lista nova
@@ -112,7 +112,6 @@ label_node* fill_label_table (str* parsed_list, label_node* table)
 
 	return 0;
 }
-*/
 
 int label_exists(char* label)
 {

@@ -23,7 +23,7 @@ typedef struct label_node { //estrutura que guarda uma palavra de memória
 	struct label_node* next;
 	struct label_node* last;
 } label_node;
-/*
+
 label_node* create_label_table ();
 
 label_node* insert_label (int line, char side, char* name, label_node* previous_node);
@@ -31,7 +31,6 @@ label_node* insert_label (int line, char side, char* name, label_node* previous_
 int remove_label (label_node* target_node);
 
 label_node* fill_label_table (str* parsed_list, label_node* table);
-*/
 
 int label_exists(char* label);
 
