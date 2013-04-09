@@ -86,6 +86,7 @@ str* parse_text (int argc, char* argv[])
 	while(!feof(file)){
 		read_string = malloc(sizeof(char)*TAMANHO);
 		read_string = fgets(read_string, TAMANHO, file);
+		if(read_string == NULL)break;
 		str_last = insert_str(NON_INIT_LINE, read_string, str_last); //linha não inicializada
 	}
 

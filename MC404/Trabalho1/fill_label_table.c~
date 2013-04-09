@@ -1,0 +1,13 @@
+	while(read_list != NULL){
+		//do stuff
+		if(read_list->next == NULL){
+			return 0;
+		}
+		read_list = read_list->next;
+		fprintf(file, " %s\n", read_line(read_list->phrase, table)); //imprime a palavra da direita
+		if(read_list->next == NULL){
+			return 0;
+		}
+		read_list = read_list->next;
+		line++;
+	}

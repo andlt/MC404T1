@@ -68,43 +68,30 @@ int remove_label (label_node* target_node)
 
 }
 
-label_node* fill_label_table (str* parsed_list, label_node* table)
+label_node* fill_label_table (str* line_list, label_node* table)
 {
 	int line_count = 0;
 	char side = 'l';
-	str* next_str = parsed_list;
+	char* tok = NULL; //vai guardar as palavras de cada linha line->list->phrase
 
-	if(next_str != NULL){
-		if(next_str->line == HEAD_NODE_CODE){ //pula nó cabeça
-			next_str = next_str->next;
+	if(line_list != NULL){
+		if(line_list->line == HEAD_NODE_CODE){ //pula nó cabeça
+			line_list = line_list->next;
 		}
 	}
 
-	while(next_str != NULL){
-	/*	if(next_str->tok != NULL){
-			if(strcmp(next_str->tok->word, "HEAD_NODE_CODE") == 0){ //pula o nó cabeça
-				next_str->tok = next_str->tok->next;
-			}
+	while(line_list != NULL){
+		tok = strtok(line_list->phrase, " ,\n\r\0\t()"); //lê a primeira palavra da linha
+		while(tok != NULL){
+			//Testa se é label
+				//adiciona a lista de labels
+			tok = strtok(NULL, " ,\n\r\0\t()"); //pega a próxima palavra (endereço)
 		}
-		while(next_str->tok != NULL){
-			if(next_str->tok->word[strlen(next_str->tok->word)-1] == ':'){
-				insert_label(line_count, side, next_str->tok->word,table);
-			}
-			next_str->tok = next_str->tok->next;
-		}*/
-		if(next_str->next == NULL){
+		if(line_list->next == NULL){
 			return 0;
 		}
-		else{
-			next_str = next_str->next; //Isso pode dar merda
-			if(side == 'l'){
-				side = 'r';
-			}
-			else { //side == 'r'
-				side = 'l';
-				line_count++;
-			}
-		}
+		line_list = line_list->next;
+		line_count++;
 	}
 
 	return 0;
@@ -183,6 +170,10 @@ char* get_real_address (char* token, label_node* table)
 
 char* read_line(char* line, label_node* table)
 {
+	/* Lê uma linha line e retorna a palavra de memória que deve ser escrita no arquivo
+ 	 *
+	 */
+
 	if(line == NULL){ //testa o parâmetro line
 		printf("Error : read_line : received null line");
 		return "error";
@@ -190,6 +181,7 @@ char* read_line(char* line, label_node* table)
 
 	char* tok = NULL; //vai guardar as palavras da linha line
 	char* result = malloc(sizeof(char)*WORD_SIZE); //guarda a string final
+	result[0] = '\0';
 	char* mnem = NULL; //guarda o menumônico lido
 
 	tok = strtok(line, " ,\n\r\0\t()"); //lê a primeira palavra da linha
@@ -198,14 +190,19 @@ char* read_line(char* line, label_node* table)
 		if(strcmp(mnem, UNREC_MNEM) != 0){
 			strcat(result, mnem);
 		}
-		tok = strtok(NULL, " ,\n\r\0\t()"); //pega a próxima pavra (endereço)
+		tok = strtok(NULL, " ,\n\r\0\t()"); //pega a próxima palavra (endereço)
 
-		if(tok == NULL){
-			strcat(result, " 000");  //adiciona um endereço qualquer para instruções sem endereço (como LMQ)
+		strcat(result, " ");
+		if(tok == NULL){ //fim de linha
+			strcat(result, "000");  //adiciona um endereço qualquer para instruções sem endereço (como LMQ)
+		}
+		else if(tok[0] != 'M' && tok[0] != ';' && tok[0] != '#'){  //não é um endereço de memória M(xxx) ou comentário
+			strcat(result, "000");
 		}
 		else{
 			strcat(result, get_real_address(tok, table));
 		}
+		printf("%s\n", result);
 		return result;
 	}
 	else{
@@ -213,10 +210,14 @@ char* read_line(char* line, label_node* table)
 	}
 }
 
-int write_mem_map (char* map_name, str* read_list, label_node* table){
+int write_mem_map (char* map_name, str* read_list, label_node* table)
+{
+	/* Lê a lista de linhas read_list e a tabela de rótulos label_table para
+	 * imprimir o mapa de meória em um arquivo chamado map_name
+	 */
 
 	FILE *file;
-	int line = 0;
+	int line = 0; //guarda o número da linha atual no mapa de memória
 
 	file = fopen(map_name, "w");
 
@@ -227,18 +228,17 @@ int write_mem_map (char* map_name, str* read_list, label_node* table){
 	}
 
 	while(read_list != NULL){
-		fprintf(file, "%03d", line);
-		fprintf(file, " %s", read_line(read_list->phrase, table));
+		fprintf(file, "%03d", line); //imprime a linha
+		fprintf(file, " %s", read_line(read_list->phrase, table)); //imprime a palavra da esquerda
 		if(read_list->next == NULL){
 			return 0;
 		}
 		read_list = read_list->next;
-		fprintf(file, " %s", read_line(read_list->phrase, table));
+		fprintf(file, " %s\n", read_line(read_list->phrase, table)); //imprime a palavra da direita
 		if(read_list->next == NULL){
 			return 0;
 		}
 		read_list = read_list->next;
-		fprintf(file, "\n");
 		line++;
 	}
 
