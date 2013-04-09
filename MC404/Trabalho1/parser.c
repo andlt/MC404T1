@@ -21,7 +21,7 @@ str* create_str_list ()
 
 	new_str = malloc(sizeof(str));
 
-	new_str->line = HEAD_NODE_CODE;
+	new_str->line = HEAD_NODE_CODE; //define os campos
 	new_str->next = NULL;
 	new_str->last = NULL;
 	new_str->phrase = "Cabeça";

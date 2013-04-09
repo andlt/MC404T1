@@ -13,6 +13,11 @@ char* rec_mneumnic (char* str)
 {
 	//converte um mneumonico para ser respectivo opcode
 
+	if(str == NULL){
+		printf("Error : rec_mneumnic : recebeu uma string nula");
+		return "error";
+	}
+
 	if (strcmp(str, "LMQ") == 0){
 		return "0A";
 	}

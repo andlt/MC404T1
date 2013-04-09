@@ -174,11 +174,9 @@ char* get_real_address (char* token, label_node* table)
 	}
 
 	//testar rótulos
-	printf("Antes\n");
 	if(label_exists(address, table)){
 		//substituir address por label
 	}
-	printf("Depois\n");
 
 	return address;
 }
@@ -192,10 +190,11 @@ char* read_line(char* line, label_node* table)
 
 	char* tok = NULL; //vai guardar as palavras da linha line
 	char* result = malloc(sizeof(char)*WORD_SIZE); //guarda a string final
-	char* mnem = rec_mneumnic(tok); //guarda o menumônico lido
+	char* mnem = NULL; //guarda o menumônico lido
 
 	tok = strtok(line, " ,\n\r\0\t()"); //lê a primeira palavra da linha
 	if(tok != NULL){
+		mnem = rec_mneumnic(tok);
 		if(strcmp(mnem, UNREC_MNEM) != 0){
 			strcat(result, mnem);
 		}
@@ -206,9 +205,8 @@ char* read_line(char* line, label_node* table)
 		}
 		else{
 			strcat(result, get_real_address(tok, table));
-
-		return result;
 		}
+		return result;
 	}
 	else{
 		return "Error";
