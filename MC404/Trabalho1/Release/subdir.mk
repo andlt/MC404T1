@@ -5,7 +5,6 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../definitions.c \
-../fill_label_table.c \
 ../label_table.c \
 ../linked_list.c \
 ../main.c \
@@ -14,7 +13,6 @@ C_SRCS += \
 
 OBJS += \
 ./definitions.o \
-./fill_label_table.o \
 ./label_table.o \
 ./linked_list.o \
 ./main.o \
@@ -23,7 +21,6 @@ OBJS += \
 
 C_DEPS += \
 ./definitions.d \
-./fill_label_table.d \
 ./label_table.d \
 ./linked_list.d \
 ./main.d \

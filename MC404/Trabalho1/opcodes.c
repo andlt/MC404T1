@@ -9,12 +9,13 @@
 #include <stdio.h>
 #include "opcode.h"
 
-char* rec_mneumnic (char* str)
+char* rec_mnemonic (char* str)
 {
 	//converte um mneumonico para ser respectivo opcode
+	//pode receber mneumônicos ou diretivas
 
 	if(str == NULL){
-		printf("Error : rec_mneumnic : recebeu uma string nula");
+		printf("Error : rec_mnemonic : recebeu uma string nula");
 		return "error";
 	}
 

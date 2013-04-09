@@ -83,8 +83,9 @@ label_node* fill_label_table (str* line_list, label_node* table)
 	while(line_list != NULL){
 		tok = strtok(line_list->phrase, " ,\n\r\0\t()"); //lê a primeira palavra da linha
 		while(tok != NULL){
-			//Testa se é label
-				//adiciona a lista de labels
+			if(tok[strlen(tok) -1] == ':'){
+				printf("Label %s found!\n", tok);
+			}
 			tok = strtok(NULL, " ,\n\r\0\t()"); //pega a próxima palavra (endereço)
 		}
 		if(line_list->next == NULL){
@@ -100,6 +101,27 @@ label_node* fill_label_table (str* line_list, label_node* table)
 int label_exists(char* label, label_node* table)
 {
 	//retorna 1 se o rótulo label existe na lista de rótulos, retorna 0 caso contrário
+
+	if(label == NULL){
+		printf("Error : label_exists : recebeu um apontador nulo como rótulo a ser testado");
+		return 0;
+	}
+	else if(table == NULL){
+		printf("Error : label_exists : recebeu um apontador nulo como tabela");
+		return 0;
+	}
+	else if(table->next == NULL){
+		printf("Error : label_exists : recebeu apenas o nó cabeça");
+		return 0;
+	}
+
+	table = table->next; //pula o nó cabeça
+
+	while(table != NULL){
+		if(table->name == label){
+			return 1;
+		}
+	}
 
 	return 0;
 }
@@ -186,24 +208,26 @@ char* read_line(char* line, label_node* table)
 
 	tok = strtok(line, " ,\n\r\0\t()"); //lê a primeira palavra da linha
 	if(tok != NULL){
-		mnem = rec_mneumnic(tok);
+		mnem = rec_mnemonic(tok);
 		if(strcmp(mnem, UNREC_MNEM) != 0){
 			strcat(result, mnem);
-		}
-		tok = strtok(NULL, " ,\n\r\0\t()"); //pega a próxima palavra (endereço)
 
-		strcat(result, " ");
-		if(tok == NULL){ //fim de linha
-			strcat(result, "000");  //adiciona um endereço qualquer para instruções sem endereço (como LMQ)
+			tok = strtok(NULL, " ,\n\r\0\t()"); //pega a próxima palavra (endereço)
+
+			strcat(result, " ");
+			if(tok == NULL){ //fim de linha
+				strcat(result, "000");  //adiciona um endereço qualquer para instruções sem endereço (como LMQ)
+			}
+			else if(tok[0] != 'M' && tok[0] != ';' && tok[0] != '#'){  //não é um endereço de memória M(xxx) ou comentário
+				printf("Valor de token[0] = %c\n", tok[0]);
+			}
+			else{
+				strcat(result, get_real_address(tok, table));
+			}
+			printf("%s\n", result);
+			return result;
 		}
-		else if(tok[0] != 'M' && tok[0] != ';' && tok[0] != '#'){  //não é um endereço de memória M(xxx) ou comentário
-			strcat(result, "000");
-		}
-		else{
-			strcat(result, get_real_address(tok, table));
-		}
-		printf("%s\n", result);
-		return result;
+		return "";
 	}
 	else{
 		return "Error";
