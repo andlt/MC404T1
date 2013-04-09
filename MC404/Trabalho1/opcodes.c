@@ -74,7 +74,7 @@ char* rec_mnemonic (char* str)
 		//return "13";
 	}
 	else{
-		printf("\nrec_mneumonic: %s não é um mneumônico valido\n", str);
+		//printf("\nrec_mneumonic: %s não é um mneumônico valido\n", str);
 		return UNREC_MNEM;
 	}
 	return 0;

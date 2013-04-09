@@ -57,7 +57,9 @@ label_node* insert_label (int line, char side, char* name, label_node* previous_
 
 int remove_label (label_node* target_node)
 {
-	//remove o nó target_node
+	/*
+	 * remove o nó target_node da lista na qual ele se situa
+	 */
 
 	target_node->last->next = target_node->next; //arruma os apontadores
 	target_node->next->last = target_node->last;
@@ -65,11 +67,16 @@ int remove_label (label_node* target_node)
 	free(target_node); //libera a memória
 
 	return 0;
-
 }
 
 label_node* fill_label_table (str* line_list, label_node* table)
 {
+	/*
+	 * Recebe uma lista ligada de strings line_list e um nó cabeça de uma lista
+	 * ligada table. Preenche table com o os rótulos (abcd:) presentes nas
+	 * strings. Retorna 0 para sucesso e 1 para erro.
+	 */
+
 	int line_count = 0;
 	char side = 'l';
 	char* tok = NULL; //vai guardar as palavras de cada linha line->list->phrase
@@ -79,26 +86,38 @@ label_node* fill_label_table (str* line_list, label_node* table)
 			line_list = line_list->next;
 		}
 	}
+	else{
+		printf("Erro : fill_label_table : nó cabeça 'line_list' possui valor nulo\n");
+		return NULL;
+	}
+	if(table == NULL){
+		printf("Erro : fill_label_table : nó cabeça 'table' possui valor nulo\n");
+		return NULL;
+	}
 
 	while(line_list != NULL){
 		tok = strtok(line_list->phrase, " ,\n\r\0\t()"); //lê a primeira palavra da linha
 		while(tok != NULL){
 			if(tok[strlen(tok) -1] == ':'){
 				printf("Label %s found!\n", tok);
+				insert_label(line_count, side, tok, table);
 			}
 			tok = strtok(NULL, " ,\n\r\0\t()"); //pega a próxima palavra (endereço)
 		}
-		if(line_list->next == NULL){
-			return 0;
+		if(side == 'l'){
+			side = 'r';
+		}
+		else{ //side == 'r'
+			side = 'l';
+			line_count++;
 		}
 		line_list = line_list->next;
-		line_count++;
 	}
 
 	return 0;
 }
 
-int label_exists(char* label, label_node* table)
+label_node* label_exists(char* label, label_node* table)
 {
 	//retorna 1 se o rótulo label existe na lista de rótulos, retorna 0 caso contrário
 
@@ -119,11 +138,12 @@ int label_exists(char* label, label_node* table)
 
 	while(table != NULL){
 		if(table->name == label){
-			return 1;
+			return table;
 		}
+		table = table->next;
 	}
 
-	return 0;
+	return NULL;
 }
 
 //funções de escrita do mapa de memória
@@ -159,6 +179,7 @@ char* get_real_address (char* token, label_node* table)
 	//recebe um token contendo o código referente a um registrador na memória do IAS. Esse código deve ser na forma M(XXX), onde XXX é o endereço do registrador. Devolveremos o valor de XXX em hexa
 
 	char* address = NULL;
+	label_node* label = NULL;
 
 	if(strlen(token) < 4){ //não possui o tamanho mínimo -> M(x)
 		printf("Error: get_real_address : endereço do registrador pequeno de mais (mínimo 4 caracteres).\n");
@@ -168,6 +189,12 @@ char* get_real_address (char* token, label_node* table)
 	if((token[0] != 'M' && token[0] != 'm') || (token[1] != '(')){
 		printf("Error: get_real_address : endereço do registrador não começa com 'M(' ou 'm('.\n");
 		return "error";
+	}
+
+	//testar rótulos
+	label = label_exists(address, table);
+	if(label != NULL){ //se foi encontrado um rótulo na string address
+		return label->name//substituir address por label
 	}
 
 	address = str_cpy(token, 2, strlen(token)-2);
@@ -180,11 +207,6 @@ char* get_real_address (char* token, label_node* table)
 			aux[2] = '\0';
 		}
 		address = strcat(aux, address);
-	}
-
-	//testar rótulos
-	if(label_exists(address, table)){
-		//substituir address por label
 	}
 
 	return address;
