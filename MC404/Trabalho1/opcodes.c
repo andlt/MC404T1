@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "opcode.h"
 
-char* rec_mneumonic (char* str)
+char* rec_mneumnic (char* str)
 {
 	//converte um mneumonico para ser respectivo opcode
 

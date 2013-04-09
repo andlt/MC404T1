@@ -18,16 +18,9 @@
 #define HEAD_NODE_CODE -999
 #define NON_INIT_LINE -1
 
-typedef struct token {
-	char* word;
-	struct token* next;
-	struct token* last;
-} token;
-
 typedef struct str { //nó individual da lista ligada
 	int line;
 	char* phrase;
-	token* tok;
 	struct str* next;
 	struct str* last;
 } str;

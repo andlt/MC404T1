@@ -13,6 +13,6 @@
 
 #define UNREC_MNEM "unrec_mnem"
 
-char* rec_mneumonic (char* str);
+char* rec_mneumnic (char* str);
 
 #endif /* OPCODE_H */

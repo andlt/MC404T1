@@ -34,21 +34,18 @@ label_node* insert_label (int line, char side, char* name, label_node* previous_
 	//insere um nó novo após previous_node
 
 	if(previous_node == NULL){
-		printf("\ninsert_label_node: parâmetro incorreto; nó anetrior nulo\n");
+		printf("Error : insert_label : parâmetro incorreto; nó anetrior nulo\n");
 		return NULL;
 	}
 	else{
-		label_node* new_node = NULL;
-
-		new_node = malloc(sizeof(label_node));
-		if(new_node == NULL){
-			printf("A Memória não pode ser alocada!\n");
+		label_node* new_node = malloc(sizeof(label_node));
+		if(new_node == NULL){ //testa a alocação de memória
+			printf("Error : insert_label : A Memória não pode ser alocada!\n");
 		}
 
 		new_node->line = line; //define os campos
 		new_node->side = side;
 		new_node->name = name;
-
 		new_node->last = previous_node;
 		new_node->next = previous_node->next;
 
@@ -84,7 +81,7 @@ label_node* fill_label_table (str* parsed_list, label_node* table)
 	}
 
 	while(next_str != NULL){
-		if(next_str->tok != NULL){
+	/*	if(next_str->tok != NULL){
 			if(strcmp(next_str->tok->word, "HEAD_NODE_CODE") == 0){ //pula o nó cabeça
 				next_str->tok = next_str->tok->next;
 			}
@@ -94,7 +91,7 @@ label_node* fill_label_table (str* parsed_list, label_node* table)
 				insert_label(line_count, side, next_str->tok->word,table);
 			}
 			next_str->tok = next_str->tok->next;
-		}
+		}*/
 		if(next_str->next == NULL){
 			return 0;
 		}
@@ -113,7 +110,7 @@ label_node* fill_label_table (str* parsed_list, label_node* table)
 	return 0;
 }
 
-int label_exists(char* label)
+int label_exists(char* label, label_node* table)
 {
 	//retorna 1 se o rótulo label existe na lista de rótulos, retorna 0 caso contrário
 
@@ -129,7 +126,7 @@ char* str_cpy (char* str, int start, int end)
 	char* copy = NULL;
 	int i; //contador
 
-	if(start < 0){ //testa o valor de in;icio
+	if(start < 0){ //testa o valor de início
 		printf("Error: str_cpy início menor que 0.\n");
 		start = 0;
 	}
@@ -148,7 +145,7 @@ char* str_cpy (char* str, int start, int end)
 	return copy;
 }
 
-char* get_real_address (char* token)
+char* get_real_address (char* token, label_node* table)
 {
 	//recebe um token contendo o código referente a um registrador na memória do IAS. Esse código deve ser na forma M(XXX), onde XXX é o endereço do registrador. Devolveremos o valor de XXX em hexa
 
@@ -175,55 +172,50 @@ char* get_real_address (char* token)
 		}
 		address = strcat(aux, address);
 	}
-	if(strlen(address) == 2){
 
-	}
 	//testar rótulos
-	if(label_exists(address)){
+	printf("Antes\n");
+	if(label_exists(address, table)){
 		//substituir address por label
 	}
+	printf("Depois\n");
 
 	return address;
 }
 
-char* read_line(char* line)
+char* read_line(char* line, label_node* table)
 {
-	char* tok = NULL;
-	char* result = malloc(sizeof(char)*WORD_SIZE);
-	//int i = 0;
-
-	if(line == NULL){
-		printf("Error: read_line : received null line");
+	if(line == NULL){ //testa o parâmetro line
+		printf("Error : read_line : received null line");
 		return "error";
 	}
 
-	//get directives
-	/*for(i = 0; line[i] != ' ' && line[i] != '.'; i++){
-		if(line[i] == '.'){
-			printf("Directive found!\n");
-		}
-	}*/
-	printf("%s\n", line);
-	tok = strtok(line, " ,\n\r\0\t()");
+	char* tok = NULL; //vai guardar as palavras da linha line
+	char* result = malloc(sizeof(char)*WORD_SIZE); //guarda a string final
+	char* mnem = rec_mneumnic(tok); //guarda o menumônico lido
+
+	tok = strtok(line, " ,\n\r\0\t()"); //lê a primeira palavra da linha
 	if(tok != NULL){
-		char* mnem = rec_mneumonic(tok);
 		if(strcmp(mnem, UNREC_MNEM) != 0){
 			strcat(result, mnem);
 		}
-		tok = strtok(NULL, " ,\n\r\0\t()");
+		tok = strtok(NULL, " ,\n\r\0\t()"); //pega a próxima pavra (endereço)
+
 		if(tok == NULL){
 			strcat(result, " 000");  //adiciona um endereço qualquer para instruções sem endereço (como LMQ)
 		}
-	}
-	strcat(result, " ");
-	if(tok != NULL){
-		strcat(result, get_real_address(tok));
-	}
+		else{
+			strcat(result, get_real_address(tok, table));
 
-	return result;
+		return result;
+		}
+	}
+	else{
+		return "Error";
+	}
 }
 
-int write_mem_map (char* map_name, str* read_list, label_node* label_table){
+int write_mem_map (char* map_name, str* read_list, label_node* table){
 
 	FILE *file;
 	int line = 0;
@@ -238,12 +230,12 @@ int write_mem_map (char* map_name, str* read_list, label_node* label_table){
 
 	while(read_list != NULL){
 		fprintf(file, "%03d", line);
-		fprintf(file, " %s", read_line(read_list->phrase));
+		fprintf(file, " %s", read_line(read_list->phrase, table));
 		if(read_list->next == NULL){
 			return 0;
 		}
 		read_list = read_list->next;
-		fprintf(file, " %s", read_line(read_list->phrase));
+		fprintf(file, " %s", read_line(read_list->phrase, table));
 		if(read_list->next == NULL){
 			return 0;
 		}

@@ -15,34 +15,27 @@
 
 int main (int argc, char* argv[])
 {
-	str* parsed_text;
-	label_node* label_table = NULL;
+	/* main : recebe o nome do arquivo de entrada e o nome do arquivo de saida.
+	 * Lê a entrada, cria uma lista de rótulos e imprime a saída seguindo as
+	 * especificações do IAS.
+	 */
+
+	str* parsed_text = NULL; //receberá o nó cabeça de uma lista de linhas
+	label_node* label_table = NULL; //receberá uma lista de rótulos presendes na entrada
 
 	printf("Tah Live!\n");
 
+	//divide o arquivo de entrada em linhas
 	parsed_text = parse_text(argc, argv);
 
-	//printf("%s\n", get_real_address("M(400)"));
-printf("Aqui\n");
-	//label_table = create_label_table();
-printf("Ali\n");
-
+	//cria e preenche a lista de rótulos
+	label_table = create_label_table();
 	fill_label_table(parsed_text, label_table);
 
-	//printf(label_table->next->name);
-	/*while(label_table != NULL){
-		printf("a");
-		if(label_table->next != NULL){
-			label_table = label_table->next;
-			printf("%s\n",label_table->name);
-		}
-	}*/
-	/*str* hurp = NULL;
-	hurp->tok->word*/
-	//print_str_tokens_recur(parsed_text);
+	//lê a lista de linhas e a tabela de rótulos para imprimir o mapa de meória
 	write_mem_map(argv[2], parsed_text, label_table);
 
-	//printf("%s\n", rec_mneumonic("LMQ"));
+	//liberar as memórias
 
 	printf("Tah dead!\n");
 

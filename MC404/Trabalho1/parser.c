@@ -31,24 +31,21 @@ str* create_str_list ()
 
 str* insert_str (int line, char* phrase, str* previous_str)
 {
-	//insere um nó novo após previous_str
+	/* insere um nó novo após previous_str */
 
-	if(previous_str == NULL){
-		printf("\ninsert_str: parâmetro incorreto; nó anetrior nulo\n");
+	if(previous_str == NULL){ //teste dos parâmetros
+		printf("Error : insert_str : parâmetro incorreto; nó anetrior nulo\n");
 		return NULL;
 	}
 	else{
-		str* new_str = NULL;
+		str* new_str = malloc(sizeof(str));
 
-		new_str = malloc(sizeof(str));
-		if(new_str == NULL){
-			printf("A Memória não pode ser alocada!\n");
+		if(new_str == NULL){ //testa alocação de memória
+			printf("Error : insert_str : A Memória não pode ser alocada!\n");
 		}
 
 		new_str->line = line; //define os campos
 		new_str->phrase = phrase;
-		//new_str->tok = tokenize_string(phrase);
-
 		new_str->last = previous_str;
 		new_str->next = previous_str->next;
 
@@ -74,20 +71,21 @@ int remove_str (str* target_str)
 
 str* parse_text (int argc, char* argv[])
 {
-	//Lê o arquivo e retorna uma estrutura contendo cada linha dele
+	/*Lê o arquivo de entrada e retorna uma estrutura contendo cada linha dele */
 
-	FILE *file;
-
-	char *read_string = NULL;
-	str *str_list = NULL, *str_last = NULL;//, *aux;
+	FILE *file; //arquivo de entrada
+	char *read_string = NULL; //linha mais recentemente lida do arquivo
+	str *str_list = NULL; //aponta para o nó cabeça da lista de linhas lidas
+	str *str_last = NULL; //aponta para o último elemento da lista de linhas lidas
 
 	file = fopen(argv[1], "r"); //abre o arquivo do argumento
 
-	str_last = str_list = create_str_list();
+	str_last = str_list = create_str_list(); //cria o nó cabeça da lista
 
+	//nó principal: lê uma linha do arquivo e insere na estrutura de dados
 	while(!feof(file)){
 		read_string = malloc(sizeof(char)*TAMANHO);
-		fgets(read_string, TAMANHO, file);
+		read_string = fgets(read_string, TAMANHO, file);
 		str_last = insert_str(NON_INIT_LINE, read_string, str_last); //linha não inicializada
 	}
 
