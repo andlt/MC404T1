@@ -1,5 +1,6 @@
 /*
- *  label_table.h:
+ *  label_table.c: módulo que reune todas as funções que lidam com a lista de
+ *  rótulos. Também reune as funções reponsáveis por imprimir o mapa de memória
  *
  *  Autor: André Luís L C Tavares
  *  RA: 116125
@@ -9,17 +10,19 @@
 #include "label_table.h"
 #include "opcode.h"
 
-
 //funções do grupo label (cada label contém as informações de um rótulo)
 
 label_node* create_label_table ()
 {
-	//devolve o nó cabeça de uma lista nova
+	/*
+	 * create_label_table : devolve o nó cabeça de uma nova lista de rótulos
+	 */
 
 	label_node* new_node = NULL;
 
 	new_node = malloc(sizeof(label_node));
 
+	//preenche os campos com valores específicos para o nó cabeça
 	new_node->line = HEAD_NODE_CODE;
 	new_node->side = 'h';
 	new_node->name = "Cabeça";
@@ -31,7 +34,10 @@ label_node* create_label_table ()
 
 label_node* insert_label (int line, char side, char* name, label_node* previous_node)
 {
-	//insere um nó novo após previous_node
+	/*
+	 * insert_label : Insere um nó novo após previous_node, com campos line,
+	 * side e name. Retorna um apontador para esse nó.
+	 */
 
 	if(previous_node == NULL){
 		printf("Error : insert_label : parâmetro incorreto; nó anetrior nulo\n");
@@ -58,7 +64,8 @@ label_node* insert_label (int line, char side, char* name, label_node* previous_
 int remove_label (label_node* target_node)
 {
 	/*
-	 * remove o nó target_node da lista na qual ele se situa
+	 * remove_label : Remove o nó target_node da lista na qual ele se situa.
+	 * Retorna 0 para sucesso.
 	 */
 
 	target_node->last->next = target_node->next; //arruma os apontadores
@@ -81,6 +88,7 @@ label_node* fill_label_table (str* line_list, label_node* table)
 	char side = 'l';
 	char* tok = NULL; //vai guardar as palavras de cada linha line->list->phrase
 
+	//teste dos parâmetros
 	if(line_list != NULL){
 		if(line_list->line == HEAD_NODE_CODE){ //pula nó cabeça
 			line_list = line_list->next;
@@ -95,11 +103,11 @@ label_node* fill_label_table (str* line_list, label_node* table)
 		return NULL;
 	}
 
+	//laço principal, percorre a lista line_list lendo palavra por paravra
 	while(line_list != NULL){
 		tok = strtok(line_list->phrase, " ,\n\r\0\t()"); //lê a primeira palavra da linha
 		while(tok != NULL){
-			if(tok[strlen(tok) -1] == ':'){
-				printf("Label %s found!\n", tok);
+			if(tok[strlen(tok) -1] == ':'){ //label encontrado
 				insert_label(line_count, side, tok, table);
 			}
 			tok = strtok(NULL, " ,\n\r\0\t()"); //pega a próxima palavra (endereço)
@@ -119,8 +127,12 @@ label_node* fill_label_table (str* line_list, label_node* table)
 
 label_node* label_exists(char* label, label_node* table)
 {
-	//retorna 1 se o rótulo label existe na lista de rótulos, retorna 0 caso contrário
+	/*
+	 * label_exists : retorna 1 se o rótulo label existe na lista de rótulos
+	 * table, retorna 0 caso contrário
+	 */
 
+	//testa os parâmetros
 	if(label == NULL){
 		printf("Error : label_exists : recebeu um apontador nulo como rótulo a ser testado");
 		return 0;
@@ -136,6 +148,7 @@ label_node* label_exists(char* label, label_node* table)
 
 	table = table->next; //pula o nó cabeça
 
+	//percorre a lista table em busca de um rótulo chamado label
 	while(table != NULL){
 		if(table->name == label){
 			return table;
@@ -150,7 +163,10 @@ label_node* label_exists(char* label, label_node* table)
 
 char* str_cpy (char* str, int start, int end)
 {
-	// devolve uma string com o conteúdo de str[start] até (incluindo) str[end]
+	/*
+	 * str_cpy : devolve uma string com o conteúdo de str[start] até (incluindo)
+	 * str[end]
+	 */
 
 	char* copy = NULL;
 	int i; //contador
@@ -176,7 +192,12 @@ char* str_cpy (char* str, int start, int end)
 
 char* get_real_address (char* token, label_node* table)
 {
-	//recebe um token contendo o código referente a um registrador na memória do IAS. Esse código deve ser na forma M(XXX), onde XXX é o endereço do registrador. Devolveremos o valor de XXX em hexa
+	/*
+	 * get_real_address : recebe um token contendo o código referente a um
+	 * registrador na memória do IAS. Esse código deve ser na forma M(XXX), onde
+	 * XXX é o endereço do registrador. Devolveremos o valor de XXX em hexa
+	 */
+
 
 	char* address = NULL;
 	label_node* label = NULL;
@@ -186,7 +207,7 @@ char* get_real_address (char* token, label_node* table)
 		return "error";
 	}
 
-	if((token[0] != 'M' && token[0] != 'm') || (token[1] != '(')){
+	if((token[0] != 'M' && token[0] != 'm') || (token[1] != '(')){ //testa a formatação
 		printf("Error: get_real_address : endereço do registrador não começa com 'M(' ou 'm('.\n");
 		return "error";
 	}
@@ -198,7 +219,7 @@ char* get_real_address (char* token, label_node* table)
 	}
 
 	address = str_cpy(token, 2, strlen(token)-2);
-	if(strlen(address) == 1 || strlen(address) == 2){ //workaround nojento
+	if(strlen(address) == 1 || strlen(address) == 2){ //workaround para que a memória seja escrita com o tamanho correto
 		char* aux = malloc(sizeof(char)*5);
 		aux[0] = '0';
 		aux[1] = '\0';
@@ -214,8 +235,9 @@ char* get_real_address (char* token, label_node* table)
 
 char* read_line(char* line, label_node* table)
 {
-	/* Lê uma linha line e retorna a palavra de memória que deve ser escrita no arquivo
- 	 *
+	/*
+	 * Lê uma linha line e retorna a palavra de memória que deve ser escrita no
+	 * arquivo
 	 */
 
 	if(line == NULL){ //testa o parâmetro line
@@ -223,30 +245,26 @@ char* read_line(char* line, label_node* table)
 		return "error";
 	}
 
-	char* tok = NULL; //vai guardar as palavras da linha line
+	char* tok = NULL; //guarda as palavras da linha line
 	char* result = malloc(sizeof(char)*WORD_SIZE); //guarda a string final
 	result[0] = '\0';
 	char* mnem = NULL; //guarda o menumônico lido
 
 	tok = strtok(line, " ,\n\r\0\t()"); //lê a primeira palavra da linha
 	if(tok != NULL){
-		mnem = rec_mnemonic(tok);
+		mnem = rec_mnemonic(tok); //traduz o menumônico para hexa
 		if(strcmp(mnem, UNREC_MNEM) != 0){
 			strcat(result, mnem);
-
 			tok = strtok(NULL, " ,\n\r\0\t()"); //pega a próxima palavra (endereço)
-
-			strcat(result, " ");
 			if(tok == NULL){ //fim de linha
 				strcat(result, "000");  //adiciona um endereço qualquer para instruções sem endereço (como LMQ)
 			}
 			else if(tok[0] != 'M' && tok[0] != ';' && tok[0] != '#'){  //não é um endereço de memória M(xxx) ou comentário
-				printf("Valor de token[0] = %c\n", tok[0]);
+				//printf("Valor de token[0] = %c\n", tok[0]);
 			}
 			else{
 				strcat(result, get_real_address(tok, table));
 			}
-			printf("%s\n", result);
 			return result;
 		}
 		return "";

@@ -1,5 +1,6 @@
 /*
- *  definitions.C:
+ *  definitions.c: reune as funções de conversão entre binario, octal, decimal e
+ *   hexadecimal
  *
  *  Autor: André Luís L C Tavares
  *  RA: 116125
@@ -9,70 +10,6 @@
 #include <stdio.h>
 #include "definitions.h"
 
-/*void* convert_base (char init_base, char final_base, void* number)
-{
-	if(init_base == 'x'){
-		if(final_base == 'd'){
-			return hexa_to_dec(number);
-		}
-		else if(final_base == 'b'){
-			return hexa_to_bin(number);
-		}
-		else if(final_base == 'o'){
-			return hexa_to_octa(number);
-		}
-		else{
-			printf("\nconvert_base: parâmetro incorreto; base final incorreta\n");
-		}
-	}
-	else if(init_base == 'd'){
-		if(final_base == 'x'){
-			return dec_to_hexa(number);
-		}
-		else if(final_base == 'b'){
-			return dec_to_bin(number);
-		}
-		else if(final_base == 'o'){
-			return dec_to_octa(number);
-		}
-		else{
-			printf("\nconvert_base: parâmetro incorreto; base final incorreta\n");
-		}
-	}
-	else if(init_base == 'b'){
-		if(final_base == 'x'){
-			return bin_to_hexa(number);
-		}
-		else if(final_base == 'd'){
-			return bin_to_dec(number);
-		}
-		else if(final_base == 'o'){
-			return bin_to_octa(number);
-		}
-		else{
-			printf("\nconvert_base: parâmetro incorreto; base final incorreta\n");
-		}
-	}
-	else if(init_base == 'o'){
-		if(final_base == 'x'){
-			return octa_to_hexa(number);
-		}
-		else if(final_base == 'd'){
-			return octa_to_dec(number);
-		}
-		else if(final_base == 'b'){
-			return octa_to_bin(number);
-		}
-		else{
-			printf("\nconvert_base: parâmetro incorreto; base final incorreta\n");
-		}
-	}
-	else{
-		printf("\nconvert_base: parâmetro incorreto; base inicial incorreta\n");
-		int error = -1;
-		return &error;
-	}
-}*/
 /*
 int bin_to_dec (char* bin)
 {

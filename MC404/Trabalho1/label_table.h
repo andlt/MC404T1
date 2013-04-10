@@ -1,6 +1,4 @@
 /*
- *  label_table.h:
- *
  *  Autor: André Luís L C Tavares
  *  RA: 116125
  *  Data de Criação: 31/03/13
@@ -14,7 +12,7 @@
 #include <stdio.h>
 #include "parser.h"
 
-#define WORD_SIZE 8//"AA AAA\0"
+#define WORD_SIZE 8 // "AA AAA\0"
 
 typedef struct label_node { //estrutura que guarda uma palavra de memória
 	int line;

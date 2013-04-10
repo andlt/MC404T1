@@ -1,6 +1,4 @@
 /*
- *  opcodes.h: header da tabela com as conversões nome->opcode do trabalho 1, MC404 1s2013
- *
  *  Autor: André Luís L C Tavares
  *  RA: 116125
  *  Data de Criação: 23/03/13

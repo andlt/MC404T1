@@ -11,8 +11,11 @@
 
 char* rec_mnemonic (char* str)
 {
-	//converte um mneumonico para ser respectivo opcode
-	//pode receber mneumônicos ou diretivas
+	/*
+	 * Converte um mneumonico para seu respectivo opcode. Pode receber
+	 * mneumônicos ou diretivas
+	 */
+
 
 	if(str == NULL){
 		printf("Error : rec_mnemonic : recebeu uma string nula");
@@ -74,7 +77,6 @@ char* rec_mnemonic (char* str)
 		//return "13";
 	}
 	else{
-		//printf("\nrec_mneumonic: %s não é um mneumônico valido\n", str);
 		return UNREC_MNEM;
 	}
 	return 0;

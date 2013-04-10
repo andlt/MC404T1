@@ -1,21 +1,23 @@
 /*
- *  parser.c: módulo que lê o conteúdo do arquivo e o carrega na memória
+ *  parser.c: módulo que lê o conteúdo do arquivo e o carrega na memória em uma
+ *  lista ligada
  *
  *  Autor: André Luís L C Tavares
  *  RA: 116125
  *  Data de Criação: 27/03/13
  *
- *  Log: Criar Lista ligada para conter cada caracter?
- *
  */
 
 #include "parser.h"
 
-//funções grupo str (cada str equivale a uma linha lida do arquivo de entrada
+//funções grupo str (cada str equivale a uma linha lida do arquivo de entrada)
 
 str* create_str_list ()
 {
-	//devolve um apontador para o nó cabeça de uma lista ligada de "frases" (linhas do arquivo de entrada)
+	/*
+	 * create_str_list : devolve um apontador para o nó cabeça de uma lista
+	 * ligada de linhas do arquivo de entrada
+	 */
 
 	str* new_str = NULL;
 
@@ -31,7 +33,10 @@ str* create_str_list ()
 
 str* insert_str (int line, char* phrase, str* previous_str)
 {
-	/* insere um nó novo após previous_str */
+	/*
+	 * insert_str : insere um novo nó do tipo str, após previous_str. Usa um
+	 * valor de linha line e uma linha phrase
+	 */
 
 	if(previous_str == NULL){ //teste dos parâmetros
 		printf("Error : insert_str : parâmetro incorreto; nó anetrior nulo\n");
@@ -57,7 +62,9 @@ str* insert_str (int line, char* phrase, str* previous_str)
 
 int remove_str (str* target_str)
 {
-	//remove o nó target_str
+	/*
+	 * remove_str : remove o nó target_str da lista ligada str
+	 */
 
 	target_str->last->next = target_str->next; //arruma os apontadores
 	target_str->next->last = target_str->last;
@@ -71,7 +78,10 @@ int remove_str (str* target_str)
 
 str* parse_text (int argc, char* argv[])
 {
-	/*Lê o arquivo de entrada e retorna uma estrutura contendo cada linha dele */
+	/*
+	 * parse_text : Lê o arquivo de entrada e retorna uma estrutura str contendo
+	 *  cada linha dele
+	 */
 
 	FILE *file; //arquivo de entrada
 	char *read_string = NULL; //linha mais recentemente lida do arquivo
@@ -99,6 +109,10 @@ str* parse_text (int argc, char* argv[])
 
 int print_str_phrase (str* target_str)
 {
+	/*
+	 * print_str_phrase : Imprime a linha do arquivo guardada em um nó str. Retorna 0 para sucesso.
+	 */
+
 	printf("%s", target_str->phrase);
 
 	return 0;
@@ -106,9 +120,14 @@ int print_str_phrase (str* target_str)
 
 int print_str_phrase_recur (str* target_str)
 {
+	/*
+	 * print_str_phrase_recur : Percorre uma ista ligada do tipo str imprimindo
+	 * os campos phrase. Retorna 0 para sucesso e 1 para erro
+	 */
+
 	if(target_str != NULL){
 		if(print_str_phrase(target_str) == 0){
-			return print_str_phrase_recur(target_str->next);
+			return print_str_phrase_recur(target_str->next); //percorre a lista
 		}
 		else{
 			printf("Erro na impressao");
@@ -116,6 +135,7 @@ int print_str_phrase_recur (str* target_str)
 		}
 	}
 	else{
+		printf("print_str_phrase_recur : Apontador recebido é nulo");
 		return 0;
 	}
 }
