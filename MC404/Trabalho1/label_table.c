@@ -194,7 +194,7 @@ char* get_real_address (char* token, label_node* table)
 	//testar rótulos
 	label = label_exists(address, table);
 	if(label != NULL){ //se foi encontrado um rótulo na string address
-		return label->name//substituir address por label
+		return label->name;//substituir address por label
 	}
 
 	address = str_cpy(token, 2, strlen(token)-2);

@@ -23,7 +23,8 @@ int main (int argc, char* argv[])
 	str* parsed_text = NULL; //receberá o nó cabeça de uma lista de linhas
 	label_node* label_table = NULL; //receberá uma lista de rótulos presendes na entrada
 
-	printf("Tah Live!\n");
+	char* hexa = dec_to_hexa(100);
+	printf("%s Tah Live!\n", hexa);
 
 	//divide o arquivo de entrada em linhas
 	parsed_text = parse_text(argc, argv);

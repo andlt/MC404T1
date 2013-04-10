@@ -103,7 +103,7 @@ int octa_to_bin (int octa)
 char* octa_to_dec (char* octa)
 {
 	char* dec = NULL;
-	sscanf("%o", octa, "d", dec);
+	sscanf("%o", octa, "%d", dec);
 	return dec;
 }
 /*
@@ -121,12 +121,14 @@ int dec_to_octa (int dec)
 {
 	return dec;
 }
-
+*/
 char* dec_to_hexa (int dec)
 {
-	return 'c';
+	char* converted = malloc(sizeof(char)*CONVERTED_NUM_SIZE);
+	sprintf(converted,"%010X", dec);
+	return converted;
 }
-
+/*
 int hexa_to_bin (char* hexa)
 {
 	return hexa;
